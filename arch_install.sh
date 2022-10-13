@@ -331,14 +331,14 @@ XDG_DOCUMENTS_DIR="$HOME/docs"
 XDG_MUSIC_DIR="$HOME/music"
 XDG_PICTURES_DIR="$HOME/pics"
 XDG_VIDEOS_DIR="$HOME/vids"' > $HOME/.config/user-dirs.dirs
-mkdir -p $XDG_DESKTOP_DIR
-mkdir -p $XDG_DOWNLOAD_DIR
-mkdir -p $XDG_TEMPLATES_DIR
-mkdir -p $XDG_PUBLICSHARE_DIR
-mkdir -p $XDG_DOCUMENTS_DIR
-mkdir -p $XDG_MUSIC_DIR
-mkdir -p $XDG_PICTURES_DIR
-mkdir -o $XDG_VIDEOS_DIR
+mkdir -p $HOME/.local/share/desktop
+mkdir -p $HOME/downs
+mkdir -p $HOME/.local/share/templates
+mkdir -p $HOME/.local/share/public
+mkdir -p $HOME/docs
+mkdir -p $HOME/music
+mkdir -p $HOME/pics
+mkdir -p $HOME/vids
 
 echo "Setting up neovim"
 sudo pacman -S --noconfirm --needed neovim ripgrep
@@ -401,6 +401,10 @@ paru -S kvantum qt5ct catppuccin-gtk-theme-macchiato catppuccin-macchiato-grub-t
 papirus-folders --theme Papirus-Dark --color cat-macchiato-blue
 sudo sed -i 's/#GRUB_THEME=.*/GRUB_THEME="\/usr\/share\/grub\/themes\/catppuccin-macchiato\/theme.txt"/' /etc/default/grub
 sudo grub-mkconfig -o /boot/grub/grub.cfg
+ln -s $HOME/repos/dots/.config/Kvantum $HOME/.config/Kvantum
+ln -s $HOME/repos/dots/.config/gtk-2.0 $HOME/.config/gtk-2.0
+ln -s $HOME/repos/dots/.config/gtk-3.0 $HOME/.config/gtk-3.0
+ln -s $HOME/repos/dots/.config/qt5ct $HOME/.config/qt5ct
 
 echo "Basic aur packages"
 paru -S brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp --noconfirm
@@ -467,6 +471,9 @@ if [[ $gaming = "y" ]]; then
     paru -S lib32-gamemode-git gamemode-git lib32-mangohud-git mangohud-common-git mangohud-git steam \
             lutris python-magic winetricks protontricks proton-ge-custom-bin \
             heroic-games-launcher-bin libstrangle-git --needed --noconfirm
+
+    ln -s $HOME/repos/dots/.config/gamemode.ini $HOME/.config/gamemode.init
+    ln -s $HOME/repos/dots/.config/Mangohud $HOME/.config/Mangohud
 
     echo "Setting up gamemode"
     sudo usermod -a `whoami` -G gamemode
