@@ -60,16 +60,16 @@ umount -R /mnt
 
 echo "Mounting the system"
 echo "Mounting root btrs subvolume"
-mount $partition -o subvol @ /mnt
+mount $partition -o subvol=/@ /mnt
 echo "Mounting home btrs subvolume"
 mkdir -p /mnt/home
-mount $partition -o subvol @home /mnt/home
+mount $partition -o subvol=/@home /mnt/home
 echo "Mounting cache btrs subvolume"
 mkdir -p /mnt/var/cache
-mount $partition -o subvol @cache /mnt/var/cache
+mount $partition -o subvol=/@cache /mnt/var/cache
 echo "Mounting log btrs subvolume"
 mkdir -p /mnt/var/log
-mount $partition -o subvol @log /mnt/var/log
+mount $partition -o subvol=/@log /mnt/var/log
 
 if [[ ! -z ${efipartition+x} ]]; then
     echo "Mounting efi partition"
