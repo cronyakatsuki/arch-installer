@@ -253,7 +253,7 @@ fi
 echo "Do you wanna enable zram (uses half the ram) [y/n]: "
 read zram
 if [[ $zram = "y" ]]; then
-    pacman -S zram-generator
+    pacman -S --noconfirm --needed zram-generator
     echo '[zram0]
     zram-size = ram / 2' > /etc/systemd/zram-generator.conf
 fi
