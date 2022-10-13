@@ -33,7 +33,7 @@ printf '\033c'
 lsblk
 echo "Enter the linux partition: "
 read partition
-mkfs.btrfs -L ARCH $partition
+mkfs.btrfs -f -L ARCH $partition
 
 read -p "Did you also create swap partition? [y/n]: " answer
 [[ $answer = "y" ]] && read -p "Enter swap partition: " swappartition
@@ -41,7 +41,7 @@ read -p "Did you also create swap partition? [y/n]: " answer
 
 read -p "Did you also create efi partition? [y/n]: " answer
 [[ $answer = y ]] && read -p "Enter EFI partition: " efipartition
-[[ ! -z ${efipartition+x} ]] && mkfs.vfat -F 32 $efipartition
+[[ ! -z ${efipartition+x} ]] && mkfs.vfat -f -F 32 $efipartition
 
 echo "Setting up btrfs subvolumes"
 mount $partition /mnt
