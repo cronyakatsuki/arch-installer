@@ -108,6 +108,7 @@ sed -i "s/^#VerbosePkgLists/VerbosePkgLists/" /etc/pacman.conf
 sed -i "s/^#ParallelDownloads = 5/ParallelDownloads = 10/" /etc/pacman.conf
 sed -i "s/^ParallelDownloads = 10/&\nILoveCandy" /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
+pacman -Syu
 
 echo "Setting up time zone"
 ln -sf /usr/share/zoneinfo/Europe/Zagreb /etc/localtime
