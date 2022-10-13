@@ -360,21 +360,21 @@ read hibernation
 
 echo "Do you wan't to install ryzenadj for amd cpu optimizations? [y/n]: "
 read ryzenadj
-[[ $ryzenadj = "y" ]] && paru -S --noconfirm ryzenadj-git ryzen_smu-dkms-git
+[[ $ryzenadj = "y" ]] && paru -S --noconfirm --needed ryzenadj-git ryzen_smu-dkms-git
 
 echo "Setting up startx config"
 ln -s $HOME/repos/dots/.config/X11 $HOME/.config/X11
 
 echo "Setting up kitty"
-sudo pacman -S kitty
+sudo pacman -S --noconfirm --needed kitty
 ln -s $HOME/repos/dots/.config/kitty $HOME/.config/kitty
 
 echo "Setting up picom"
-sudo pacman -S picom
+sudo pacman -S --noconfirm --needed picom
 ln -s $HOME/repos/dots/.config/picom $HOME/.config/picom
 
 echo "Setting up my fonts"
-paru -S nerd-fonts-fira-code nerd-fonts-jetbrains-mono ipa-fonts noto-fonts-emoji
+paru -S  --noconfirm --needed nerd-fonts-fira-code nerd-fonts-jetbrains-mono ipa-fonts noto-fonts-emoji
 
 echo "Setting up dwm"
 git clone https://github.com/cronyakatsuki/dwm.git ~/repos/dwm
@@ -399,11 +399,11 @@ git clone https://github.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scrip
 ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
 
 echo "Setting up dunst"
-sudo pacman -S dunst libnotify
+sudo pacman -S --noconfirm --needed dunst libnotify
 ln -s $HOME/repos/dots/.config/dunst $HOME/.config/dunst
 
 echo "Setting up theming for gtk/qt/grub"
-paru -S kvantum qt5ct catppuccin-gtk-theme-macchiato catppuccin-macchiato-grub-theme-git \
+paru -S --noconfirm --needed kvantum qt5ct catppuccin-gtk-theme-macchiato catppuccin-macchiato-grub-theme-git \
     kvantum-theme-catppuccin-git papirus-folders-catppuccin-git xcursor-breeze
 papirus-folders --theme Papirus-Dark --color cat-macchiato-blue
 sudo sed -i 's/#GRUB_THEME=.*/GRUB_THEME="\/usr\/share\/grub\/themes\/catppuccin-macchiato\/theme.txt"/' /etc/default/grub
@@ -414,7 +414,7 @@ ln -s $HOME/repos/dots/.config/gtk-3.0 $HOME/.config/gtk-3.0
 ln -s $HOME/repos/dots/.config/qt5ct $HOME/.config/qt5ct
 
 echo "Basic aur packages"
-paru -S brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp --noconfirm
+paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp --noconfirm
 
 if pacman -Qi nvidia-prime > /dev/null; then
     echo "Installing envycontrol for managing igpu/dgpu usage"
@@ -422,34 +422,34 @@ if pacman -Qi nvidia-prime > /dev/null; then
 fi
 
 echo "Setting up zathura"
-sudo pacman -S zathura zathura-pdf-mupdf
+sudo pacman -S --needed --noconfirm zathura zathura-pdf-mupdf
 ln -s $HOME/repos/dots/.config/zathura $HOME/.config/zathura
 
 echo "Setting up nsxiv"
-paru -S nsxiv
+paru -S --needed --noconfirm nsxiv
 ln -s $HOME/repos/dots/.config/nsxiv $HOME/.config/nsxiv
 
 echo "Setting up mpv"
-paru -S mpv mpv-mpris-git mpv-sponsorblock-minimal-git mpv-thumbnail-script
+paru -S --needed --noconfirm mpv mpv-mpris-git mpv-sponsorblock-minimal-git mpv-thumbnail-script
 ln -s $HOME/repos/dots/.config/mpv $HOME/.config/mpv
 
 echo "Setting up lf file manager"
-paru -S lf w3m unrar lhasa mupdf-tools mcomix-gtk3-git epub-thumbnailer-git python-pdf2image perl-image-exiftool ffmpegthumbnailer pup
+paru -S --needed --noconfirm lf w3m unrar lhasa mupdf-tools mcomix-gtk3-git epub-thumbnailer-git python-pdf2image perl-image-exiftool ffmpegthumbnailer pup
 ln -s $HOME/repos/dots/.config/lf $HOME/.config/lf
 
 echo "Setting up newsboat"
-sudo pacman -S --noconfirm newsboat cronie
+sudo pacman -S --needed --noconfirm newsboat cronie
 sudo systemctl enable cronie
 echo "# minute hour day_of_month month day_of_week command
     */30  *        *         *        *      /usr/bin/newsboat -x reload" | crontab
 
 echo "Setting up opentabletdriver"
-paru -S opentabletdriver
+paru -S --needed --noconfirm opentabletdriver
 echo "blacklist wacom" | sudo tee -a /etc/modprobe.d/blacklist.conf
 echo "blacklist hid_uclogic" | sudo tee -a /etc/modprobe.d/blacklist.conf
 
 echo "Setting up torrent with transmission-cli"
-sudo pacman -S transmission-cli
+sudo pacman -S --needed --noconfirm transmission-cli
 mkdir -p .config/transmission-daemon
 ln -s /home/crony/repos/dots/.config/transmission-daemon/settings.json  /home/crony/.config/transmission-daemon/settings.json
 
@@ -475,7 +475,7 @@ if [[ $gaming = "y" ]]; then
     lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader
 
     echo "Installing gaming related software"
-    paru -S lib32-gamemode-git gamemode-git lib32-mangohud-git mangohud-common-git mangohud-git steam \
+    paru -S --needed --noconfirm lib32-gamemode-git gamemode-git lib32-mangohud-git mangohud-common-git mangohud-git steam \
             lutris python-magic winetricks protontricks proton-ge-custom-bin \
             heroic-games-launcher-bin libstrangle-git --needed --noconfirm
 
