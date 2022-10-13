@@ -83,9 +83,10 @@ if [[ ! -z ${swappartition+x} ]]; then
 fi
 
 echo "Installing basic system packages"
-pacstrap /mnt base base-devel linux linux-firmware linux-header \
-    linux-zen linux-zen-headers linux-zen-firmware\
-    linux-lts linux-lts-headers linux-lts-firmware btrfs-progs amd-ucode
+pacstrap /mnt base base-devel linux linux-firmware linux-headers \
+    linux-zen linux-zen-headers \
+    linux-lts linux-lts-headers \
+    btrfs-progs amd-ucode
 
 echo "Generating fstab"
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -267,7 +268,7 @@ pacman -S --noconfirm zsh p7zip unzip xclip pacman-contrib wireless_tools man pc
     pipewire pipewire-pulse pipewire-alsa rtkit alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
     firefox playerctl lxsession bluez bluez-utils syncthing \
     keepassxc mpv thunderbird maim xdotool bat acpid \
-    ufw hugo python-pygments python-gitpython ccache \
+    ufw hugo python-pygments python-gitpython ccache
 
 ufw enable
 ufw logging off
