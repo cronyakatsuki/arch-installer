@@ -132,9 +132,12 @@ cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 reflector --latest 200 --sort rate --save /etc/pacman.d/mirrorlist
 
 
-echo "Setting up network manager"
-pacman -S --noconfirm networkmanager
+echo "Setting up network managment"
+pacman -S --noconfirm networkmanager dhcpcd openresolv
 systemctl enable NetworkManager
+systemctl enable dhcpcd
+rm /etc/resolv.conf
+sed -i 's/#name_servers=127.0.0.1/name_servers="94.140.14.14 94.140.15.15 2a10:50c0::ad1:ff 2a10:50c0::ad2:ff"/' /etc/resolvconf.conf
 
 echo "Setting up xorg, gpu drivers and my xorg configs"
 pacman -S --needed --noconfirm xorg-server-common xorg-xsetroot xorg-xinit xorg-xinput xwallpaper xdotool
