@@ -198,7 +198,7 @@ EndSection" > /etc/X11/xorg.conf.d/40-libinput.conf
 
 echo "Do you wanna preload amdgpu with mkinitcpio.conf [y/n]: "
 read preload_amdgpu
-[[ $preload_amdgpu = "y" ]] sed -i 's/MODULES=()/MODULES=(amdgpu)/g' /etc/mkinitcpio.conf
+[[ $preload_amdgpu = "y" ]] sed -i 's/MODULES=()/MODULES=(amdgpu)/' /etc/mkinitcpio.conf
 
 echo "Want to install microcode for an amd cpu [y/n]"
 read amd_ucode
