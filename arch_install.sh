@@ -267,11 +267,14 @@ if [[ $oldroot_fix = "y" ]]; then
 fi
 
 echo "Installing basic packages and enabling basic services"
-pacman -S --noconfirm zsh p7zip unzip xclip pacman-contrib wireless_tools man pcmanfm \
-    pipewire pipewire-pulse pipewire-alsa rtkit alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
+pacman -S --noconfirm zsh p7zip unzip xclip \
+    pacman-contrib wireless_tools man pcmanfm \
+    pipewire pipewire-pulse pipewire-alsa rtkit \
+    alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
     firefox playerctl lxsession bluez bluez-utils syncthing \
     keepassxc mpv thunderbird maim xdotool bat acpid \
-    ufw hugo python-pygments python-gitpython ccache
+    ufw hugo python-pygments python-gitpython \
+    ccache smartmontools libreoffice-still aria2
 
 ufw enable
 ufw logging off
