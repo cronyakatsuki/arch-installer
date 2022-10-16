@@ -83,10 +83,13 @@ if [[ ! -z ${swappartition+x} ]]; then
 fi
 
 echo "Installing basic system packages"
-pacstrap /mnt base base-devel linux linux-firmware linux-headers \
-    linux-zen linux-zen-headers \
-    linux-lts linux-lts-headers \
-    btrfs-progs amd-ucode
+echo "Do you have an intel or amd cpu? [intel/amd]"
+read intelamd
+if [ $intelamd = "intel" ]; then
+    pacstrap /mnt base linux-firmware linux-lts btrfs-progs intel-ucode
+elif [ $intelamd = "amd" ]; then 
+    pacstrap /mnt base linux-firmware linux-lts btrfs-progs amd-ucode
+fi
 
 echo "Generating fstab"
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -139,6 +142,7 @@ echo "Setting up network managment"
 pacman -S --noconfirm networkmanager dhcpcd openresolv
 systemctl enable NetworkManager
 systemctl enable dhcpcd
+echo "Setting better dns servers as defaults"
 sed -i 's/#name_servers=127.0.0.1/name_servers="94.140.14.14 94.140.15.15 2a10:50c0::ad1:ff 2a10:50c0::ad2:ff"/' /etc/resolvconf.conf
 
 echo "Setting up xorg, gpu drivers and my xorg configs"
@@ -200,10 +204,6 @@ echo "Do you wanna preload amdgpu with mkinitcpio.conf [y/n]: "
 read preload_amdgpu
 [[ $preload_amdgpu = "y" ]] && sed -i 's/MODULES=()/MODULES=(amdgpu)/' /etc/mkinitcpio.conf
 
-echo "Want to install microcode for an amd cpu [y/n]: "
-read amd_ucode
-[[ $amd_ucode = "y" ]] && pacman -S --needed --noconfirm amd-ucode
-
 echo "Setting up grub"
 pacman --noconfirm -S grub efibootmgr os-prober
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
@@ -258,7 +258,11 @@ if [[ $zram = "y" ]]; then
     zram-size = ram / 2' > /etc/systemd/zram-generator.conf
 fi
 
-[[ $nvidia = "y" ]] && read -p "Do you wanna enable a fix for /oldroot/ shutdown error? [y/n]: " oldroot_fix
+echo "Do you wan't to disable hibernation [y/n]: "
+read hibernation
+[[ $hibernation = "y" ]] && systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
+[[ $nvidia = "y" ]] && read -p "Do you wanna enable a fix for /oldroot/ during shutdown with nvidia? [y/n]: " oldroot_fix
 if [[ $oldroot_fix = "y" ]]; then
     mkdir -p /usr/lib/systemd/system-shutdown
     echo "#!/bin/sh
@@ -326,11 +330,12 @@ git clone https://github.com/cronyakatsuki/dots
 cd ~
 mkdir ~/.config
 
-echo "Setting up my zsh config"
+echo "Setting up my zsh config and scripts"
 paru -S --needed --noconfirm zsh zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting starship pfetch-btw glow
 ln -s $HOME/repos/dots/.zshenv $HOME/.zshenv
 ln -s $HOME/repos/dots/.config/zsh $/HOME/.config/zsh
 ln -s $HOME/repos/dots/.config/starship.toml $HOME/.config/starship
+ln -s $HOME/repos/dots/bin $HOME/bin
 
 echo "Setting up xdg user dirs"
 echo 'XDG_DESKTOP_DIR="$HOME/.local/share/desktop"
@@ -357,10 +362,6 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 
 git clone https://github.com/cronyakatsuki/nvim-conf ~/.config/nvim
 
-echo "Do you wan't to disable hibernation [y/n]: "
-read hibernation
-[[ $hibernation = "y" ]] && sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
-
 echo "Do you wan't to install ryzenadj for amd cpu optimizations? [y/n]: "
 read ryzenadj
 [[ $ryzenadj = "y" ]] && paru -S --noconfirm --needed ryzenadj-git ryzen_smu-dkms-git
@@ -377,7 +378,7 @@ sudo pacman -S --noconfirm --needed picom
 ln -s $HOME/repos/dots/.config/picom $HOME/.config/picom
 
 echo "Setting up my fonts"
-paru -S  --noconfirm --needed nerd-fonts-fira-code nerd-fonts-jetbrains-mono ipa-fonts noto-fonts-emoji
+paru -S  --noconfirm --needed nerd-fonts-ibm-plex-mono nerd-fonts-jetbrains-mono ipa-fonts noto-fonts-emoji
 
 echo "Setting up dwm"
 git clone https://github.com/cronyakatsuki/dwm.git ~/repos/dwm
