@@ -301,7 +301,7 @@ usermod -a $username -G network
 usermod -a $username -G video
 usermod -a $username -G input
 usermod -a $username -G audio
-
+passwd $username
 
 echo "Setting up makepkg.conf"
 sed -i 's/-march=native/-march=x86-64 -mtune=generic/' /etc/makepkg.conf
