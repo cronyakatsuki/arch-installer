@@ -89,6 +89,8 @@ if [ $intelamd = "intel" ]; then
     pacstrap /mnt base linux-firmware linux-lts btrfs-progs intel-ucode
 elif [ $intelamd = "amd" ]; then 
     pacstrap /mnt base linux-firmware linux-lts btrfs-progs amd-ucode
+else
+    pacstrap /mnt base linux-firmware linux-lts btrfs-progs
 fi
 
 echo "Generating fstab"
