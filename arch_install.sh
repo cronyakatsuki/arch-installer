@@ -83,13 +83,13 @@ if [[ ! -z ${swappartition+x} ]]; then
 fi
 
 echo "Installing basic system packages"
-echo "Do you have an intel or amd cpu? [intel/amd]"
+echo "Do you have an intel or amd cpu, or none? [intel/amd/none]: "
 read intelamd
 if [ $intelamd = "intel" ]; then
     pacstrap /mnt base linux-firmware linux-lts btrfs-progs intel-ucode
-elif [ $intelamd = "amd" ]; then 
+elif [ $intelamd = "amd" ]; then
     pacstrap /mnt base linux-firmware linux-lts btrfs-progs amd-ucode
-else
+elif [ $intelamd = "none" ]; then
     pacstrap /mnt base linux-firmware linux-lts btrfs-progs
 fi
 
