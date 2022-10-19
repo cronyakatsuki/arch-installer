@@ -273,7 +273,7 @@ if [[ $oldroot_fix = "y" ]]; then
 fi
 
 echo "Installing basic packages and enabling basic services"
-pacman -S --noconfirm zsh p7zip unzip xclip \
+pacman -S --noconfirm zsh p7zip unzip xclip base-devel \
     pacman-contrib wireless_tools man pcmanfm \
     pipewire pipewire-pulse pipewire-alsa rtkit \
     alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
