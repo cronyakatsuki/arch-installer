@@ -274,7 +274,7 @@ fi
 
 echo "Installing basic packages and enabling basic services"
 pacman -S --noconfirm zsh p7zip unzip xclip base-devel \
-    pacman-contrib wireless_tools man pcmanfm \
+    pacman-contrib wireless_tools man pcmanfm fzf git \
     pipewire pipewire-pulse pipewire-alsa rtkit \
     alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
     firefox playerctl lxsession bluez bluez-utils syncthing \
@@ -288,6 +288,10 @@ systemctl enable rtkit-daemon.service
 systemctl enable bluetooth.service
 systemctl enable acpid.service
 
+echo "Setting up makepkg.conf"
+sed -i 's/-march=native/-march=x86-64 -mtune=generic/' /etc/makepkg.conf
+sed -i 's/!ccache/ccache/g' /etc/makepkg.conf
+
 echo "Set root password"
 passwd
 
@@ -296,16 +300,13 @@ echo "Setting up user"
 echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 echo "Enter Username: "
 read username
-useradd -m -G wheel -s /bin/zsh $username
+useradd -m $username
+passwd $username
+usermod -a $username -G wheel
 usermod -a $username -G network
 usermod -a $username -G video
 usermod -a $username -G input
 usermod -a $username -G audio
-passwd $username
-
-echo "Setting up makepkg.conf"
-sed -i 's/-march=native/-march=x86-64 -mtune=generic/' /etc/makepkg.conf
-sed -i 's/!ccache/ccache/g' /etc/makepkg.conf
 
 ai3_path=/home/$username/arch_install3.sh
 sed '1,/^#part3$/d' arch_install2.sh > $ai3_path
@@ -339,6 +340,7 @@ ln -s $HOME/repos/dots/.config/zsh/* $/HOME/.config/zsh
 ln -s $HOME/repos/dots/.config/zsh/.* $/HOME/.config/zsh
 ln -s $HOME/repos/dots/.config/starship.toml $HOME/.config/starship
 ln -s $HOME/repos/dots/bin $HOME/bin
+chsh -s $(which zsh)
 
 echo "Setting up xdg user dirs"
 echo 'XDG_DESKTOP_DIR="$HOME/.local/share/desktop"
