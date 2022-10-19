@@ -276,7 +276,7 @@ pacman -S --noconfirm zsh p7zip unzip xclip \
     pipewire pipewire-pulse pipewire-alsa rtkit \
     alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
     firefox playerctl lxsession bluez bluez-utils syncthing \
-    keepassxc mpv thunderbird maim xdotool bat acpid \
+    keepassxc thunderbird maim xdotool bat acpid \
     ufw hugo python-pygments python-gitpython \
     ccache smartmontools libreoffice-still aria2
 
@@ -333,7 +333,8 @@ mkdir ~/.config
 echo "Setting up my zsh config and scripts"
 paru -S --needed --noconfirm zsh zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting starship pfetch-btw glow
 ln -s $HOME/repos/dots/.zshenv $HOME/.zshenv
-ln -s $HOME/repos/dots/.config/zsh $/HOME/.config/zsh
+ln -s $HOME/repos/dots/.config/zsh/* $/HOME/.config/zsh
+ln -s $HOME/repos/dots/.config/zsh/.* $/HOME/.config/zsh
 ln -s $HOME/repos/dots/.config/starship.toml $HOME/.config/starship
 ln -s $HOME/repos/dots/bin $HOME/bin
 
@@ -362,34 +363,6 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 
 git clone https://github.com/cronyakatsuki/nvim-conf ~/.config/nvim
 
-echo "Do you wan't to install ryzenadj for amd cpu optimizations? [y/n]: "
-read ryzenadj
-[[ $ryzenadj = "y" ]] && paru -S --noconfirm --needed ryzenadj-git ryzen_smu-dkms-git
-
-echo "Setting up startx config"
-ln -s $HOME/repos/dots/.config/X11 $HOME/.config/X11
-
-echo "Setting up kitty"
-sudo pacman -S --noconfirm --needed kitty
-ln -s $HOME/repos/dots/.config/kitty $HOME/.config/kitty
-
-echo "Setting up picom"
-sudo pacman -S --noconfirm --needed picom
-ln -s $HOME/repos/dots/.config/picom $HOME/.config/picom
-
-echo "Setting up my fonts"
-paru -S  --noconfirm --needed nerd-fonts-ibm-plex-mono nerd-fonts-jetbrains-mono ipa-fonts noto-fonts-emoji
-
-echo "Setting up dwm"
-git clone https://github.com/cronyakatsuki/dwm.git ~/repos/dwm
-cd ~/repos/dwm
-sudo make install clean
-
-echo "Setting up dwmblocks"
-git clone https://github.com/cronyakatsuki/dwmblocks-async.git ~/repos/dwmblocks-async
-cd ~/repos/dwmblocks-async
-sudo make install clean
-
 echo "Setting up slock"
 git clone https://github.com/cronyakatsuki/slock.git ~/repos/slock
 cd ~/repos/slock
@@ -402,60 +375,10 @@ sudo make install clean
 git clone https://github.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scripts
 ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
 
-echo "Setting up dunst"
-sudo pacman -S --noconfirm --needed dunst libnotify
-ln -s $HOME/repos/dots/.config/dunst $HOME/.config/dunst
-
-echo "Setting up theming for gtk/qt/grub"
-paru -S --noconfirm --needed kvantum qt5ct catppuccin-gtk-theme-macchiato catppuccin-macchiato-grub-theme-git \
-    kvantum-theme-catppuccin-git papirus-folders-catppuccin-git xcursor-breeze
-papirus-folders --theme Papirus-Dark --color cat-macchiato-blue
-sudo sed -i 's/#GRUB_THEME=.*/GRUB_THEME="\/usr\/share\/grub\/themes\/catppuccin-macchiato\/theme.txt"/' /etc/default/grub
-sudo grub-mkconfig -o /boot/grub/grub.cfg
-ln -s $HOME/repos/dots/.config/Kvantum $HOME/.config/Kvantum
-ln -s $HOME/repos/dots/.config/gtk-2.0 $HOME/.config/gtk-2.0
-ln -s $HOME/repos/dots/.config/gtk-3.0 $HOME/.config/gtk-3.0
-ln -s $HOME/repos/dots/.config/qt5ct $HOME/.config/qt5ct
-
-echo "Basic aur packages"
 paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp --noconfirm
 
-if pacman -Qi nvidia-prime > /dev/null; then
-    echo "Installing envycontrol for managing igpu/dgpu usage"
-    paru -S envycontrol
-fi
-
-echo "Setting up zathura"
-sudo pacman -S --needed --noconfirm zathura zathura-pdf-mupdf
-ln -s $HOME/repos/dots/.config/zathura $HOME/.config/zathura
-
-echo "Setting up nsxiv"
-paru -S --needed --noconfirm nsxiv
-ln -s $HOME/repos/dots/.config/nsxiv $HOME/.config/nsxiv
-
-echo "Setting up mpv"
-paru -S --needed --noconfirm mpv mpv-mpris-git mpv-sponsorblock-minimal-git mpv-thumbnail-script
-ln -s $HOME/repos/dots/.config/mpv $HOME/.config/mpv
-
-echo "Setting up lf file manager"
-paru -S --needed --noconfirm lf w3m unrar lhasa mupdf-tools mcomix-gtk3-git epub-thumbnailer-git python-pdf2image perl-image-exiftool ffmpegthumbnailer pup
-ln -s $HOME/repos/dots/.config/lf $HOME/.config/lf
-
-echo "Setting up newsboat"
-sudo pacman -S --needed --noconfirm newsboat cronie
-sudo systemctl enable cronie
-echo "# minute hour day_of_month month day_of_week command
-    */30  *        *         *        *      /usr/bin/newsboat -x reload" | crontab
-
-echo "Setting up opentabletdriver"
-paru -S --needed --noconfirm opentabletdriver
-echo "blacklist wacom" | sudo tee -a /etc/modprobe.d/blacklist.conf
-echo "blacklist hid_uclogic" | sudo tee -a /etc/modprobe.d/blacklist.conf
-
-echo "Setting up torrent with transmission-cli"
-sudo pacman -S --needed --noconfirm transmission-cli
-mkdir -p .config/transmission-daemon
-ln -s /home/crony/repos/dots/.config/transmission-daemon/settings.json  /home/crony/.config/transmission-daemon/settings.json
+cd ~/repos/dots
+make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the configs you wanna install: " | awk '{ print $1 }')
 
 echo "Do you wan't to setup gaming related packages, settings and optimizations? [y/n]"
 read gaming
