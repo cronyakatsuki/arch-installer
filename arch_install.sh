@@ -275,12 +275,12 @@ fi
 echo "Installing basic packages and enabling basic services"
 pacman -S --noconfirm zsh p7zip unzip xclip base-devel \
     pacman-contrib wireless_tools man pcmanfm fzf git \
-    pipewire pipewire-pulse pipewire-alsa rtkit \
+    pipewire pipewire-pulse pipewire-alsa rtkit openssh \
     alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
     firefox playerctl lxsession bluez bluez-utils syncthing \
-    keepassxc thunderbird maim xdotool bat acpid \
-    ufw hugo python-pygments python-gitpython \
-    ccache smartmontools libreoffice-still aria2
+    keepassxc thunderbird maim xdotool bat acpid imagemagick\
+    ufw hugo python-pygments python-gitpython udisks2 \
+    ccache smartmontools libreoffice-still aria2 ghostscript
 
 ufw enable
 ufw logging off
