@@ -274,12 +274,12 @@ fi
 
 echo "Installing basic packages and enabling basic services"
 pacman -S --noconfirm zsh p7zip unzip xclip base-devel \
-    pacman-contrib wireless_tools man pcmanfm fzf git \
-    pipewire pipewire-pulse pipewire-alsa rtkit openssh \
+    pacman-contrib wireless_tools man pcmanfm fzf git android-file-transfer \
+    pipewire pipewire-pulse pipewire-alsa rtkit openssh android udev \
     alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
     firefox playerctl lxsession bluez bluez-utils syncthing \
-    keepassxc thunderbird maim xdotool bat acpid imagemagick\
-    ufw hugo python-pygments python-gitpython udisks2 \
+    keepassxc thunderbird shotgun xdotool bat acpid imagemagick\
+    ufw hugo python-pygments python-gitpython udisks2 hacksaw \
     ccache smartmontools libreoffice-still aria2 ghostscript
 
 ufw enable
@@ -319,7 +319,7 @@ exit
 
 #part3
 echo "Setting up paru"
-sudo pacman -S --noconfirm --needed go rust nodejs npm cmake git
+sudo pacman -S --noconfirm --needed go rust nodejs npm cmake git zig
 git clone https://aur.archlinux.org/paru.git
 cd paru
 makepgk -si
@@ -379,7 +379,7 @@ sudo make install clean
 git clone https://github.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scripts
 ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
 
-paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp --noconfirm
+paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade
 
 cd ~/repos/dots
 make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the configs you wanna install: " | awk '{ print $1 }')
