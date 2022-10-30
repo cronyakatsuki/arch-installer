@@ -275,7 +275,7 @@ fi
 echo "Installing basic packages and enabling basic services"
 pacman -S --noconfirm zsh p7zip unzip xclip base-devel \
     pacman-contrib wireless_tools man pcmanfm fzf git android-file-transfer \
-    pipewire pipewire-pulse pipewire-alsa rtkit openssh android udev \
+    pipewire pipewire-pulse pipewire-alsa rtkit openssh android-udev \
     alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
     firefox playerctl lxsession bluez bluez-utils syncthing \
     keepassxc thunderbird shotgun xdotool bat acpid imagemagick\
