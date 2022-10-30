@@ -139,7 +139,6 @@ pacman -S --noconfirm --needed reflector rsync
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 reflector --latest 200 --sort rate --save /etc/pacman.d/mirrorlist
 
-
 echo "Setting up network managment"
 pacman -S --noconfirm networkmanager dhcpcd openresolv
 systemctl enable NetworkManager
@@ -211,7 +210,7 @@ pacman --noconfirm -S grub efibootmgr os-prober
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 
 if [[ $nvidia = "y" ]]; then
-    sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 rd.systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 nmi_watchdog=0 zswap.enabled=0 rcutree.rcu_idle_gp_delay=1"/' /etc/default/grub
+    sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 nmi_watchdog=0 zswap.enabled=0 nvidia-drm.modeset=1 rcutree.rcu_idle_gp_delay=1"/' /etc/default/grub
 else
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 rd.systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 nmi_watchdog=0 zswap.enabled=0"/' /etc/default/grub
 fi
@@ -247,8 +246,8 @@ if [[ $ssd = "y" ]]; then
     mkdir -v /etc/systemd/system/fstrim.timer.d
     touch /etc/systemd/system/fstrim.timer.d/override.conf
     echo "[Timer]
-    OnCalendar=
-    OnCalendar=daily" > /etc/systemd/system/fstrim.timer.d/override.conf
+OnCalendar=
+OnCalendar=daily" > /etc/systemd/system/fstrim.timer.d/override.conf
     systemctl enable fstrim.timer
 fi
 
@@ -257,7 +256,7 @@ read zram
 if [[ $zram = "y" ]]; then
     pacman -S --noconfirm --needed zram-generator
     echo '[zram0]
-    zram-size = ram / 2' > /etc/systemd/zram-generator.conf
+zram-size = ram / 2' > /etc/systemd/zram-generator.conf
 fi
 
 echo "Do you wan't to disable hibernation [y/n]: "
@@ -268,8 +267,9 @@ read hibernation
 if [[ $oldroot_fix = "y" ]]; then
     mkdir -p /usr/lib/systemd/system-shutdown
     echo "#!/bin/sh
-    # remove nvidia modules
-    /usr/bin/modprobe -r nvidia_drm nvidia_modeset nvidia_uvm && /usr/bin/modprobe -r nvidia" > /usr/lib/systemd/system-shutdown/nvidia.shutdown
+# remove nvidia modules
+/usr/bin/modprobe -r nvidia_drm nvidia_modeset nvidia_uvm && /usr/bin/modprobe -r nvidia" > /usr/lib/systemd/system-shutdown/nvidia.shutdown
+    chmod +x /usr/lib/systemd/system-shutdown/nvidia.shutdown
 fi
 
 echo "Installing basic packages and enabling basic services"
@@ -282,8 +282,6 @@ pacman -S --noconfirm zsh p7zip unzip xclip base-devel \
     ufw hugo python-pygments python-gitpython udisks2 hacksaw \
     ccache smartmontools libreoffice-still aria2 ghostscript
 
-ufw enable
-ufw logging off
 systemctl enable rtkit-daemon.service
 systemctl enable bluetooth.service
 systemctl enable acpid.service
@@ -327,30 +325,24 @@ cd ..
 rm -rf paru
 
 echo "Getting my dotfiles"
-mkdir ~/repos
-cd ~/repos
-git clone https://github.com/cronyakatsuki/dots
+mkdir -p ~/repos/dots
+cd ~/repos/dots
+git clone https://github.com/cronyakatsuki/arch-dots.git arch
 cd ~
 mkdir ~/.config
 
 echo "Setting up my zsh config and scripts"
 paru -S --needed --noconfirm zsh zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting starship pfetch-btw glow
-ln -s $HOME/repos/dots/.zshenv $HOME/.zshenv
-ln -s $HOME/repos/dots/.config/zsh/* $/HOME/.config/zsh
-ln -s $HOME/repos/dots/.config/zsh/.* $/HOME/.config/zsh
-ln -s $HOME/repos/dots/.config/starship.toml $HOME/.config/starship
-ln -s $HOME/repos/dots/bin $HOME/bin
+ln -s $HOME/repos/dots/arch/.zshenv $HOME/.zshenv
+ln -s $HOME/repos/dots/arch/.config/zsh/* $/HOME/.config/zsh
+ln -s $HOME/repos/dots/arch/.config/zsh/.* $/HOME/.config/zsh
+ln -s $HOME/repos/dots/arch/.config/starship.toml $HOME/.config/starship
+mkdir ~/bin
+ln -s $HOME/repos/dots/bin/* $HOME/bin
 chsh -s $(which zsh)
 
 echo "Setting up xdg user dirs"
-echo 'XDG_DESKTOP_DIR="$HOME/.local/share/desktop"
-XDG_DOWNLOAD_DIR="$HOME/downs"
-XDG_TEMPLATES_DIR="$HOME/.local/share/templates"
-XDG_PUBLICSHARE_DIR="$HOME/.local/share/public"
-XDG_DOCUMENTS_DIR="$HOME/docs"
-XDG_MUSIC_DIR="$HOME/music"
-XDG_PICTURES_DIR="$HOME/pics"
-XDG_VIDEOS_DIR="$HOME/vids"' > $HOME/.config/user-dirs.dirs
+ln -s $HOME/repos/dots/arch/.config/user-dirs.dirs $HOME/.config/user-dirs.dirs
 mkdir -p $HOME/.local/share/desktop
 mkdir -p $HOME/downs
 mkdir -p $HOME/.local/share/templates
@@ -381,8 +373,8 @@ ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
 
 paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade
 
-cd ~/repos/dots
-make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the configs you wanna install: " | awk '{ print $1 }')
+cd ~/repos/dots/arch
+make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the arch related configs you wanna install: " | awk '{ print $1 }')
 
 echo "Do you wan't to setup gaming related packages, settings and optimizations? [y/n]"
 read gaming
