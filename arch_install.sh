@@ -316,6 +316,7 @@ echo "Pre-Installation Finish Reboot now"
 exit
 
 #part3
+cd ~
 echo "Setting up paru"
 sudo pacman -S --noconfirm --needed go rust nodejs npm cmake git zig
 git clone https://aur.archlinux.org/paru.git
@@ -371,7 +372,7 @@ sudo make install clean
 git clone https://github.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scripts
 ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
 
-paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade
+paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade dashbinsh
 
 cd ~/repos/dots/arch
 make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the arch related configs you wanna install: " | awk '{ print $1 }')
@@ -394,7 +395,7 @@ if [[ $gaming = "y" ]]; then
     mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error \
     lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo \
     sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama \
-    ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 \
+    ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 vkd3d lib32-vkd3d \
     lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader
 
     echo "Installing gaming related software"
@@ -419,3 +420,5 @@ if [[ $gaming = "y" ]]; then
     echo "Creating the default wine prefix folder"
     mkdir -p $HOME/.local/share/wineprefixes/default
 fi
+
+exit
