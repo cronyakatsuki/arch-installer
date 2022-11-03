@@ -223,7 +223,7 @@ read preload_amdgpu
 
 echo "Setting up grub"
 pacman --noconfirm -S grub efibootmgr os-prober
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 
 read -n 1 -s -p "To continue press any key"
 
