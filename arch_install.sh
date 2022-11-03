@@ -346,7 +346,7 @@ sudo pacman -S --noconfirm --needed go rust nodejs npm cmake git zig
 git clone https://aur.archlinux.org/paru.git ~/paru
 read -n 1 -s -p "To continue press any key"
 cd ~/paru
-makepgk -si
+makepkg -si
 read -n 1 -s -p "To continue press any key"
 cd ~
 rm -rf ~/paru
