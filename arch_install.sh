@@ -82,6 +82,8 @@ if [[ ! -z ${swappartition+x} ]]; then
     swapon $swappartition
 fi
 
+read -n 1 -s -p "To continue press any key"
+
 echo "Installing basic system packages"
 echo "Do you have an intel or amd cpu, or none? [intel/amd/none]: "
 read intelamd
@@ -134,6 +136,8 @@ echo "::1             localhost" >> /etc/hosts
 echo "127.0.1.1       $hostname.localdomain $hostname" >> /etc/hosts
 mkinitcpio -P
 
+read -n 1 -s -p "To continue press any key"
+
 echo "Downloading and setting better mirrorlist"
 pacman -S --noconfirm --needed reflector rsync
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
@@ -145,6 +149,8 @@ systemctl enable NetworkManager
 systemctl enable dhcpcd
 echo "Setting better dns servers as defaults"
 sed -i 's/#name_servers=127.0.0.1/name_servers="94.140.14.14 94.140.15.15 2a10:50c0::ad1:ff 2a10:50c0::ad2:ff"/' /etc/resolvconf.conf
+
+read -n 1 -s -p "To continue press any key"
 
 echo "Setting up xorg, gpu drivers and my xorg configs"
 pacman -S --needed --noconfirm xorg-server-common xorg-xsetroot xorg-xinit xorg-xinput xwallpaper xdotool
@@ -209,6 +215,8 @@ echo "Setting up grub"
 pacman --noconfirm -S grub efibootmgr os-prober
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 
+read -n 1 -s -p "To continue press any key"
+
 if [[ $nvidia = "y" ]]; then
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 nmi_watchdog=0 zswap.enabled=0 nvidia-drm.modeset=1 rcutree.rcu_idle_gp_delay=1"/' /etc/default/grub
 else
@@ -216,6 +224,8 @@ else
 fi
 
 grub-mkconfig -o /boot/grub/grub.cfg
+
+read -n 1 -s -p "To continue press any key"
 
 echo "Do you wanna disable sp5100_tco driver for amd to disable it's watchdog (Can help with shutdown errors) [y/n]: "
 read sp5100_tco
@@ -286,6 +296,8 @@ systemctl enable rtkit-daemon.service
 systemctl enable bluetooth.service
 systemctl enable acpid.service
 
+read -n 1 -s -p "To continue press any key"
+
 echo "Setting up makepkg.conf"
 sed -i 's/-march=native/-march=x86-64 -mtune=generic/' /etc/makepkg.conf
 sed -i 's/!ccache/ccache/g' /etc/makepkg.conf
@@ -306,6 +318,8 @@ usermod -a $username -G video
 usermod -a $username -G input
 usermod -a $username -G audio
 
+read -n 1 -s -p "To continue press any key"
+
 ai3_path=/home/$username/arch_install3.sh
 sed '1,/^#part3$/d' arch_install2.sh > $ai3_path
 chown $username:$username $ai3_path
@@ -320,18 +334,24 @@ cd ~
 echo "Setting up paru"
 sudo pacman -S --noconfirm --needed go rust nodejs npm cmake git zig
 git clone https://aur.archlinux.org/paru.git ~/paru
+read -n 1 -s -p "To continue press any key"
 cd ~/paru
 makepgk -si
+read -n 1 -s -p "To continue press any key"
 cd ~
 rm -rf ~/paru
+read -n 1 -s -p "To continue press any key"
 
 echo "Setting up additional must have aur packages"
 paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade dashbinsh
+
+read -n 1 -s -p "To continue press any key"
 
 echo "Getting my arch dotfiles"
 mkdir -p ~/repos/dots
 cd ~/repos/dots
 git clone https://github.com/cronyakatsuki/arch-dots.git arch
+read -n 1 -s -p "To continue press any key"
 mkdir ~/.config
 cd ~/repos/dots/arch
 make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the arch related configs you wanna install: " | awk '{ print $1 }')
@@ -340,6 +360,7 @@ echo "Getting my general dotfiles"
 mkdir -p ~/repos/dots
 cd ~/repos/dots
 git clone https://github.com/cronyakatsuki/general-dots.git general
+read -n 1 -s -p "To continue press any key"
 cd ~/repos/dots/general
 make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the general related configs you wanna install: " | awk '{ print $1 }')
 
@@ -347,6 +368,7 @@ echo "Getting my scripts"
 mkdir -p ~/bin
 cd ~/repos/dots
 git clone https://github.com/cronyakatsuki/scripts.git ~/repos/dots/scripts
+read -n 1 -s -p "To continue press any key"
 ln -s $HOME/repos/dots/scripts $HOME/bin/misc
 
 echo "Setting up neovim"
@@ -355,11 +377,13 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
  ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 
 git clone https://github.com/cronyakatsuki/nvim-conf ~/.config/nvim
+read -n 1 -s -p "To continue press any key"
 
 echo "Setting up slock"
 git clone https://github.com/cronyakatsuki/slock.git ~/repos/slock
 cd ~/repos/slock
 sudo make install clean
+read -n 1 -s -p "To continue press any key"
 
 echo "Setting up dmenu and dmenu scripts"
 git clone https://github.com/cronyakatsuki/dmenu.git ~/repos/dmenu
@@ -367,6 +391,7 @@ cd ~/repos/dmenu
 sudo make install clean
 git clone https://github.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scripts
 ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
+read -n 1 -s -p "To continue press any key"
 
 
 echo "Do you wan't to setup gaming related packages, settings and optimizations? [y/n]"
