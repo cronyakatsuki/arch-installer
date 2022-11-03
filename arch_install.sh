@@ -319,39 +319,35 @@ exit
 cd ~
 echo "Setting up paru"
 sudo pacman -S --noconfirm --needed go rust nodejs npm cmake git zig
-git clone https://aur.archlinux.org/paru.git
-cd paru
+git clone https://aur.archlinux.org/paru.git ~/paru
+cd ~/paru
 makepgk -si
-cd ..
-rm -rf paru
+cd ~
+rm -rf ~/paru
 
-echo "Getting my dotfiles"
+echo "Setting up additional must have aur packages"
+paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade dashbinsh
+
+echo "Getting my arch dotfiles"
 mkdir -p ~/repos/dots
 cd ~/repos/dots
 git clone https://github.com/cronyakatsuki/arch-dots.git arch
-cd ~
 mkdir ~/.config
+cd ~/repos/dots/arch
+make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the arch related configs you wanna install: " | awk '{ print $1 }')
 
-echo "Setting up my zsh config and scripts"
-paru -S --needed --noconfirm zsh zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting starship pfetch-btw glow
-ln -s $HOME/repos/dots/arch/.zshenv $HOME/.zshenv
-ln -s $HOME/repos/dots/arch/.config/zsh/* $/HOME/.config/zsh
-ln -s $HOME/repos/dots/arch/.config/zsh/.* $/HOME/.config/zsh
-ln -s $HOME/repos/dots/arch/.config/starship.toml $HOME/.config/starship
-mkdir ~/bin
-ln -s $HOME/repos/dots/bin/* $HOME/bin
-chsh -s $(which zsh)
+echo "Getting my general dotfiles"
+mkdir -p ~/repos/dots
+cd ~/repos/dots
+git clone https://github.com/cronyakatsuki/general-dots.git general
+cd ~/repos/dots/general
+make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the general related configs you wanna install: " | awk '{ print $1 }')
 
-echo "Setting up xdg user dirs"
-ln -s $HOME/repos/dots/arch/.config/user-dirs.dirs $HOME/.config/user-dirs.dirs
-mkdir -p $HOME/.local/share/desktop
-mkdir -p $HOME/downs
-mkdir -p $HOME/.local/share/templates
-mkdir -p $HOME/.local/share/public
-mkdir -p $HOME/docs
-mkdir -p $HOME/music
-mkdir -p $HOME/pics
-mkdir -p $HOME/vids
+echo "Getting my scripts"
+mkdir -p ~/bin
+cd ~/repos/dots
+git clone https://github.com/cronyakatsuki/scripts.git ~/repos/dots/scripts
+ln -s $HOME/repos/dots/scripts $HOME/bin/misc
 
 echo "Setting up neovim"
 sudo pacman -S --noconfirm --needed neovim ripgrep
@@ -372,10 +368,6 @@ sudo make install clean
 git clone https://github.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scripts
 ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
 
-paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade dashbinsh
-
-cd ~/repos/dots/arch
-make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the arch related configs you wanna install: " | awk '{ print $1 }')
 
 echo "Do you wan't to setup gaming related packages, settings and optimizations? [y/n]"
 read gaming
