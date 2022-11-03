@@ -103,6 +103,16 @@ sed '1,/^#part2$/d' `basename $0` > /mnt/arch_install2.sh
 chmod +x /mnt/arch_install2.sh
 arch-chroot /mnt ./arch_install2.sh
 rm -rf /mnt/arch_install2.sh
+
+echo "Unmounting everything"
+umount -R /mnt
+
+if [[ ! -z ${swappartition+x} ]]; then
+    echo "Unmouning swap partition"
+swapoff $swappartition
+fi
+
+
 exit
 
 #part2
