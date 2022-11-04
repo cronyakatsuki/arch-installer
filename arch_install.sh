@@ -344,13 +344,14 @@ cd ~
 echo "Setting up paru"
 sudo pacman -S --noconfirm --needed go rust nodejs npm cmake git zig
 git clone https://aur.archlinux.org/paru.git ~/paru
-read -n 1 -s -p "To continue press any key"
 cd ~/paru
 makepkg -si
 read -n 1 -s -p "To continue press any key"
 cd ~
 rm -rf ~/paru
-read -n 1 -s -p "To continue press any key"
+
+echo "Reloading systemd-resolved"
+sudo systemctl restart systemd-resolved
 
 echo "Setting up additional must have aur packages"
 paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade dashbinsh
@@ -364,7 +365,7 @@ git clone https://github.com/cronyakatsuki/arch-dots.git arch
 read -n 1 -s -p "To continue press any key"
 mkdir ~/.config
 cd ~/repos/dots/arch
-make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the arch related configs you wanna install: " | awk '{ print $1 }')
+make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | awk '{ print $1 }')
 
 echo "Getting my general dotfiles"
 mkdir -p ~/repos/dots
@@ -372,7 +373,7 @@ cd ~/repos/dots
 git clone https://github.com/cronyakatsuki/general-dots.git general
 read -n 1 -s -p "To continue press any key"
 cd ~/repos/dots/general
-make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | fzf --multi --prompt "Choose what part of the general related configs you wanna install: " | awk '{ print $1 }')
+make $(cat Makefile | grep -E '.*:.*' | column -t -s ':'  | awk '{ print $1 }')
 
 echo "Getting my scripts"
 mkdir -p ~/bin
