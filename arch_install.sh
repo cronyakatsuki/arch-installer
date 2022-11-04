@@ -365,7 +365,7 @@ git clone https://github.com/cronyakatsuki/arch-dots.git arch
 read -n 1 -s -p "To continue press any key"
 mkdir ~/.config
 cd ~/repos/dots/arch
-make $(cat Makefile | grep -E '.*:.*' | column -t -s ':' | awk '{ print $1 }')
+make
 
 echo "Getting my general dotfiles"
 mkdir -p ~/repos/dots
@@ -373,7 +373,7 @@ cd ~/repos/dots
 git clone https://github.com/cronyakatsuki/general-dots.git general
 read -n 1 -s -p "To continue press any key"
 cd ~/repos/dots/general
-make $(cat Makefile | grep -E '.*:.*' | column -t -s ':'  | awk '{ print $1 }')
+make
 
 echo "Getting my scripts"
 mkdir -p ~/bin
