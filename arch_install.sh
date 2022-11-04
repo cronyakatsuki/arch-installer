@@ -3,35 +3,35 @@
 ## == My arch installer script == ##
 #part1 installer iso
 printf '\033c'
-echo "Welcome, lets start this shi*t"
-echo "Enabling parallel downloads and updating keyring"
+printf '%s\n' "Welcome, lets start this shi*t"
+printf '%s\n' "Enabling parallel downloads and updating keyring"
 sed -i "s/^#ParallelDownloads = 5/ParallelDownloads = 10/" /etc/pacman.conf
 pacman --noconfirm -Sy archlinux-keyring
 
-echo "Loading croatian keys"
+printf '%s\n' "Loading croatian keys"
 loadkeys croat
 
-echo "Connect to wifi if needed"
-echo """Steps to connect
+printf '%s\n' "Connect to wifi if needed"
+printf '%s\n' """Steps to connect
 [iwd]# device list
 [iwd]# station device scan
 [iwd]# station device get-networks
 [iwd]# station device connect SSID
 """
 iwctl
-echo "Setting ntp"
+printf '%s\n' "Setting ntp"
 timedatectl set-ntp true
 printf '\033c'
 
-echo "Listing drives"
+printf '%s\n' "Listing drives"
 lsblk
-echo "Enter the drive: "
+printf '%s\n' "Enter the drive: "
 read drive
 cfdisk $drive
 
 printf '\033c'
 lsblk
-echo "Enter the linux partition: "
+printf '%s\n' "Enter the linux partition: "
 read partition
 mkfs.btrfs -f -L ARCH $partition
 
@@ -43,49 +43,49 @@ read -p "Did you also create efi partition? [y/n]: " answer
 [[ $answer = y ]] && read -p "Enter EFI partition: " efipartition
 [[ ! -z ${efipartition+x} ]] && mkfs.vfat -F 32 $efipartition
 
-echo "Setting up btrfs subvolumes"
+printf '%s\n' "Setting up btrfs subvolumes"
 mount $partition /mnt
 cd /mnt
-echo "Creating root subvolume"
+printf '%s\n' "Creating root subvolume"
 btrfs subvolume create /mnt/@
-echo "Creating home subvolume"
+printf '%s\n' "Creating home subvolume"
 btrfs subvolume create /mnt/@home
-echo "Creating cache subvolume"
+printf '%s\n' "Creating cache subvolume"
 btrfs subvolume create /mnt/@cache
-echo "Creating log subvolume"
+printf '%s\n' "Creating log subvolume"
 btrfs subvolume create /mnt/@log
-echo "Unmounting root volume"
+printf '%s\n' "Unmounting root volume"
 cd ~
 umount -R /mnt
 
-echo "Mounting the system"
-echo "Mounting root btrs subvolume"
+printf '%s\n' "Mounting the system"
+printf '%s\n' "Mounting root btrs subvolume"
 mount $partition -o subvol=/@ /mnt
-echo "Mounting home btrs subvolume"
+printf '%s\n' "Mounting home btrs subvolume"
 mkdir -p /mnt/home
 mount $partition -o subvol=/@home /mnt/home
-echo "Mounting cache btrs subvolume"
+printf '%s\n' "Mounting cache btrs subvolume"
 mkdir -p /mnt/var/cache
 mount $partition -o subvol=/@cache /mnt/var/cache
-echo "Mounting log btrs subvolume"
+printf '%s\n' "Mounting log btrs subvolume"
 mkdir -p /mnt/var/log
 mount $partition -o subvol=/@log /mnt/var/log
 
 if [[ ! -z ${efipartition+x} ]]; then
-    echo "Mounting efi partition"
+    printf '%s\n' "Mounting efi partition"
     mkdir -p /mnt/boot
     mount $efipartition /mnt/boot
 fi
 
 if [[ ! -z ${swappartition+x} ]]; then
-    echo "Mounting swap partition"
+    printf '%s\n' "Mounting swap partition"
     swapon $swappartition
 fi
 
 read -n 1 -s -p "To continue press any key"
 
-echo "Installing basic system packages"
-echo "Do you have an intel or amd cpu, or none? [intel/amd/none]: "
+printf '%s\n' "Installing basic system packages"
+printf '%s\n' "Do you have an intel or amd cpu, or none? [intel/amd/none]: "
 read intelamd
 if [ $intelamd = "intel" ]; then
     pacstrap /mnt base linux-firmware linux-lts btrfs-progs intel-ucode
@@ -95,20 +95,20 @@ elif [ $intelamd = "none" ]; then
     pacstrap /mnt base linux-firmware linux-lts btrfs-progs
 fi
 
-echo "Generating fstab"
+printf '%s\n' "Generating fstab"
 genfstab -U /mnt >> /mnt/etc/fstab
 
-echo "Generating chroot part of the script"
+printf '%s\n' "Generating chroot part of the script"
 sed '1,/^#part2$/d' `basename $0` > /mnt/arch_install2.sh
 chmod +x /mnt/arch_install2.sh
 arch-chroot /mnt ./arch_install2.sh
 rm -rf /mnt/arch_install2.sh
 
-echo "Unmounting everything"
+printf '%s\n' "Unmounting everything"
 umount -R /mnt
 
 if [[ ! -z ${swappartition+x} ]]; then
-    echo "Unmouning swap partition"
+    printf '%s\n' "Unmouning swap partition"
 swapoff $swappartition
 fi
 
@@ -119,7 +119,7 @@ exit
 printf '\033c'
 pacman -Syu
 pacman -S --noconfirm --needed sed
-echo "Setting up pacman settings."
+printf '%s\n' "Setting up pacman settings."
 sed -i "s/^#Color/Color/" /etc/pacman.conf
 sed -i "s/^#CheckSpace/CheckSpace/" /etc/pacman.conf
 sed -i "s/^#VerbosePkgLists/VerbosePkgLists/" /etc/pacman.conf
@@ -128,63 +128,63 @@ sed -i "s/^ParallelDownloads = 10/&\nILoveCandy/" /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 pacman -Syu
 
-echo "Setting up time zone"
+printf '%s\n' "Setting up time zone"
 ln -sf /usr/share/zoneinfo/Europe/Zagreb /etc/localtime
 hwclock --systohc
-echo "Setting up locale"
-echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+printf '%s\n' "Setting up locale"
+printf '%s\n' "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen
-echo "LANG=en_US.UTF-8" > /etc/locale.conf
-echo "KEYMAP=croat" > /etc/vconsole.conf
+printf '%s\n' "LANG=en_US.UTF-8" > /etc/locale.conf
+printf '%s\n' "KEYMAP=croat" > /etc/vconsole.conf
 
-echo "Setting up hostname and networking"
-echo "Enter hostname: "
+printf '%s\n' "Setting up hostname and networking"
+printf '%s\n' "Enter hostname: "
 read hostname
-echo $hostname > /etc/hostname
-echo "127.0.0.1       localhost" >> /etc/hosts
-echo "::1             localhost" >> /etc/hosts
-echo "127.0.1.1       $hostname.localdomain $hostname" >> /etc/hosts
+printf '%s\n' $hostname > /etc/hostname
+printf '%s\n' "127.0.0.1       localhost" >> /etc/hosts
+printf '%s\n' "::1             localhost" >> /etc/hosts
+printf '%s\n' "127.0.1.1       $hostname.localdomain $hostname" >> /etc/hosts
 mkinitcpio -P
 
 read -n 1 -s -p "To continue press any key"
 
-echo "Downloading and setting better mirrorlist"
+printf '%s\n' "Downloading and setting better mirrorlist"
 pacman -S --noconfirm --needed reflector rsync
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 reflector --latest 200 --sort rate --save /etc/pacman.d/mirrorlist
 
-echo "Setting up network managment"
+printf '%s\n' "Setting up network managment"
 pacman -S --noconfirm networkmanager dhcpcd openresolv
 systemctl enable NetworkManager
 systemctl enable dhcpcd
-echo "Setting better dns servers as defaults"
+printf '%s\n' "Setting better dns servers as defaults"
 sed -i 's/#name_servers=127.0.0.1/name_servers="94.140.14.14 94.140.15.15 2a10:50c0::ad1:ff 2a10:50c0::ad2:ff"/' /etc/resolvconf.conf
 
 read -n 1 -s -p "To continue press any key"
 
-echo "Setting up xorg, gpu drivers and my xorg configs"
+printf '%s\n' "Setting up xorg, gpu drivers and my xorg configs"
 pacman -S --needed --noconfirm xorg-server-common xorg-xsetroot xorg-xinit xorg-xinput xwallpaper xdotool
 
-echo "Do you have an amd gpu/igpu [y/n]: "
+printf '%s\n' "Do you have an amd gpu/igpu [y/n]: "
 read amd
 [[ $amd = "y" ]] && pacman -S --needed --noconfirm xf86-video-amdgpu
 
-echo "Do you have an nvidia gpu/dgpu [y/n]: "
+printf '%s\n' "Do you have an nvidia gpu/dgpu [y/n]: "
 read nvidia
 [[ $nvidia = "y" ]] && pacman -S --needed --noconfirm nvidia-dkms nvidia-settings
 
-echo "Are you running this in virtualbox? install virtualbox-guest-utils [y/n]"
+printf '%s\n' "Are you running this in virtualbox? install virtualbox-guest-utils [y/n]"
 read virtualbox
 [[ $virtualbox = "y" ]] && pacman -S --needed --noconfirm virtualbox-guest-utils
 
-echo "Do you have nvidia optimus [y/n]: "
+printf '%s\n' "Do you have nvidia optimus [y/n]: "
 read optimus
 [[ $optimus = "y" ]] && [[ $nvidia = "y" ]] && pacman -S --needed --noconfirm nvidia-prime
 
-echo "Setting xorg configurations"
+printf '%s\n' "Setting xorg configurations"
 
 mkdir -p /etc/X11/xorg.conf.d
-echo "Section "InputClass"
+printf '%s\n' "Section "InputClass"
 	Identifier "My Mouse"
 	Driver "libinput"
 	MatchIsPointer "yes"
@@ -192,21 +192,21 @@ echo "Section "InputClass"
 	Option "AccelSpeed" "0"
 EndSection" > /etc/X11/xorg.conf.d/50-mouse-acceleration.conf
 
-echo "Section "ServerFlags"
+printf '%s\n' "Section "ServerFlags"
     Option "StandbyTime" "0"
     Option "SuspendTime" "0"
     Option "OffTime" "0"
     Option "BlankTime" "0"
 EndSection" > /etc/X11/xorg.conf.d/10-monitor.conf
 
-echo "Section "InputClass"
+printf '%s\n' "Section "InputClass"
         Identifier "system-keyboard"
         MatchIsKeyboard "on"
         Option "XkbLayout" "hr"
         Option "XkbOptions" "caps:escape"
 EndSection" > /etc/X11/xorg.conf.d/00-keyboard.conf
 
-echo "Section "InputClass"
+printf '%s\n' "Section "InputClass"
         Identifier "libinput touchpad catchall"
         MatchIsTouchpad "on"
         MatchDevicePath "/dev/input/event*"
@@ -217,11 +217,11 @@ echo "Section "InputClass"
         Option "ScrollMethod" "edge"
 EndSection" > /etc/X11/xorg.conf.d/40-libinput.conf
 
-echo "Do you wanna preload amdgpu with mkinitcpio.conf [y/n]: "
+printf '%s\n' "Do you wanna preload amdgpu with mkinitcpio.conf [y/n]: "
 read preload_amdgpu
 [[ $preload_amdgpu = "y" ]] && sed -i 's/MODULES=()/MODULES=(amdgpu)/' /etc/mkinitcpio.conf
 
-echo "Setting up grub"
+printf '%s\n' "Setting up grub"
 pacman --noconfirm -S grub efibootmgr os-prober
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 
@@ -237,62 +237,62 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 read -n 1 -s -p "To continue press any key"
 
-echo "Do you wanna disable sp5100_tco driver for amd to disable it's watchdog (Can help with shutdown errors) [y/n]: "
+printf '%s\n' "Do you wanna disable sp5100_tco driver for amd to disable it's watchdog (Can help with shutdown errors) [y/n]: "
 read sp5100_tco
 if [[ $sp5100_tco = "y" ]]; then
     mkdir -p /etc/modprobe.d
-    echo "blacklist sp5100_tco" > /etc/modprobe.d/sp5100_tco.conf
+    printf '%s\n' "blacklist sp5100_tco" > /etc/modprobe.d/sp5100_tco.conf
 fi
 
-echo "Do you wanna set up better swappiness settings [y/n]: "
+printf '%s\n' "Do you wanna set up better swappiness settings [y/n]: "
 read swap_settings
 if [[ $swap_settings = "y" ]]; then
     mkdir -p /etc/sysctl.d
-    echo "vm.swappiness = 10" > /etc/sysctl.d/99-swappiness.conf
-    echo "vm.vfs_cache_pressure=50" > /etc/sysctl.d/99-vfs_cache_pressure.conf
+    printf '%s\n' "vm.swappiness = 10" > /etc/sysctl.d/99-swappiness.conf
+    printf '%s\n' "vm.vfs_cache_pressure=50" > /etc/sysctl.d/99-vfs_cache_pressure.conf
 fi
 
-echo "Do you wanna disable network manager powersave [y/n]: "
+printf '%s\n' "Do you wanna disable network manager powersave [y/n]: "
 read networkmanager_powersave
 if [[ $networkmanager_powersave = "y" ]]; then 
     mkdir -p /etc/NetworkManager/conf.d
-    echo "[connection]
+    printf '%s\n' "[connection]
     wifi.powersave = 2" > /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
 fi
 
-echo "Have an ssd? Enable fstrim and make it run daily [y/n]: "
+printf '%s\n' "Have an ssd? Enable fstrim and make it run daily [y/n]: "
 read ssd
 if [[ $ssd = "y" ]]; then
     mkdir -v /etc/systemd/system/fstrim.timer.d
     touch /etc/systemd/system/fstrim.timer.d/override.conf
-    echo "[Timer]
+    printf '%s\n' "[Timer]
 OnCalendar=
 OnCalendar=daily" > /etc/systemd/system/fstrim.timer.d/override.conf
     systemctl enable fstrim.timer
 fi
 
-echo "Do you wanna enable zram (uses half the ram) [y/n]: "
+printf '%s\n' "Do you wanna enable zram (uses half the ram) [y/n]: "
 read zram
 if [[ $zram = "y" ]]; then
     pacman -S --noconfirm --needed zram-generator
-    echo '[zram0]
+    printf '%s\n' '[zram0]
 zram-size = ram / 2' > /etc/systemd/zram-generator.conf
 fi
 
-echo "Do you wan't to disable hibernation [y/n]: "
+printf '%s\n' "Do you wan't to disable hibernation [y/n]: "
 read hibernation
 [[ $hibernation = "y" ]] && systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 
 [[ $nvidia = "y" ]] && read -p "Do you wanna enable a fix for /oldroot/ during shutdown with nvidia? [y/n]: " oldroot_fix
 if [[ $oldroot_fix = "y" ]]; then
     mkdir -p /usr/lib/systemd/system-shutdown
-    echo "#!/bin/sh
+    printf '%s\n' "#!/bin/sh
 # remove nvidia modules
 /usr/bin/modprobe -r nvidia_drm nvidia_modeset nvidia_uvm && /usr/bin/modprobe -r nvidia" > /usr/lib/systemd/system-shutdown/nvidia.shutdown
     chmod +x /usr/lib/systemd/system-shutdown/nvidia.shutdown
 fi
 
-echo "Installing basic packages and enabling basic services"
+printf '%s\n' "Installing basic packages and enabling basic services"
 pacman -S --noconfirm zsh p7zip unzip xclip base-devel \
     pacman-contrib wireless_tools man pcmanfm fzf git android-file-transfer \
     pipewire pipewire-pulse pipewire-alsa rtkit openssh android-udev \
@@ -308,17 +308,17 @@ systemctl enable acpid.service
 
 read -n 1 -s -p "To continue press any key"
 
-echo "Setting up makepkg.conf"
+printf '%s\n' "Setting up makepkg.conf"
 sed -i 's/-march=native/-march=x86-64 -mtune=generic/' /etc/makepkg.conf
 sed -i 's/!ccache/ccache/g' /etc/makepkg.conf
 
-echo "Set root password"
+printf '%s\n' "Set root password"
 passwd
 
-echo "Setting up user"
+printf '%s\n' "Setting up user"
 
-echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-echo "Enter Username: "
+printf '%s\n' "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+printf '%s\n' "Enter Username: "
 read username
 useradd -m $username
 passwd $username
@@ -336,12 +336,12 @@ chown $username:$username $ai3_path
 chmod +x $ai3_path
 su -c $ai3_path -s /bin/sh $username
 rm -rf $ai3_path
-echo "Pre-Installation Finish Reboot now"
+printf '%s\n' "Pre-Installation Finish Reboot now"
 exit
 
 #part3
 cd ~
-echo "Setting up paru"
+printf '%s\n' "Setting up paru"
 sudo pacman -S --noconfirm --needed go rust nodejs npm cmake git zig
 git clone https://aur.archlinux.org/paru.git ~/paru
 cd ~/paru
@@ -350,15 +350,15 @@ read -n 1 -s -p "To continue press any key"
 cd ~
 rm -rf ~/paru
 
-echo "Reloading systemd-resolved"
+printf '%s\n' "Reloading systemd-resolved"
 sudo systemctl restart systemd-resolved
 
-echo "Setting up additional must have aur packages"
+printf '%s\n' "Setting up additional must have aur packages"
 paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade dashbinsh
 
 read -n 1 -s -p "To continue press any key"
 
-echo "Getting my arch dotfiles"
+printf '%s\n' "Getting my arch dotfiles"
 mkdir -p ~/repos/dots
 cd ~/repos/dots
 git clone https://github.com/cronyakatsuki/arch-dots.git arch
@@ -367,7 +367,7 @@ mkdir ~/.config
 cd ~/repos/dots/arch
 make
 
-echo "Getting my general dotfiles"
+printf '%s\n' "Getting my general dotfiles"
 mkdir -p ~/repos/dots
 cd ~/repos/dots
 git clone https://github.com/cronyakatsuki/general-dots.git general
@@ -375,14 +375,14 @@ read -n 1 -s -p "To continue press any key"
 cd ~/repos/dots/general
 make
 
-echo "Getting my scripts"
+printf '%s\n' "Getting my scripts"
 mkdir -p ~/bin
 cd ~/repos/dots
 git clone https://github.com/cronyakatsuki/scripts.git ~/repos/dots/scripts
 read -n 1 -s -p "To continue press any key"
 ln -s $HOME/repos/dots/scripts $HOME/bin/misc
 
-echo "Setting up neovim"
+printf '%s\n' "Setting up neovim"
 sudo pacman -S --noconfirm --needed neovim ripgrep
 git clone --depth 1 https://github.com/wbthomason/packer.nvim\
  ~/.local/share/nvim/site/pack/packer/start/packer.nvim
@@ -390,13 +390,13 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
 git clone https://github.com/cronyakatsuki/nvim-conf ~/.config/nvim
 read -n 1 -s -p "To continue press any key"
 
-echo "Setting up slock"
+printf '%s\n' "Setting up slock"
 git clone https://github.com/cronyakatsuki/slock.git ~/repos/slock
 cd ~/repos/slock
 sudo make install clean
 read -n 1 -s -p "To continue press any key"
 
-echo "Setting up dmenu and dmenu scripts"
+printf '%s\n' "Setting up dmenu and dmenu scripts"
 git clone https://github.com/cronyakatsuki/dmenu.git ~/repos/dmenu
 cd ~/repos/dmenu
 sudo make install clean
@@ -405,20 +405,20 @@ ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
 read -n 1 -s -p "To continue press any key"
 
 
-echo "Do you wan't to setup gaming related packages, settings and optimizations? [y/n]"
+printf '%s\n' "Do you wan't to setup gaming related packages, settings and optimizations? [y/n]"
 read gaming
 if [[ $gaming = "y" ]]; then
     if pacman -Qi nvidia-dkms > /dev/null; then
-        echo "Installing nvidia drivers"
+        printf '%s\n' "Installing nvidia drivers"
         sudo pacman -S --noconfirm --needed nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings vulkan-icd-loader lib32-vulkan-icd-loader
     fi
 
     if pacman -Qi xf86-video-amdgpu > /dev/null; then
-        echo "Installing amdgpu drivers"
+        printf '%s\n' "Installing amdgpu drivers"
         sudo pacman -S --noconfirm --needed lib32-mesa vulkan-radeon lib32-vulkan-radeon vulkan-icd-loader lib32-vulkan-icd-loader
     fi
     
-    echo "Installing wine dependencies"
+    printf '%s\n' "Installing wine dependencies"
     sudo pacman -S --needed --noconfirm wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls \
     mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error \
     lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo \
@@ -426,7 +426,7 @@ if [[ $gaming = "y" ]]; then
     ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 vkd3d lib32-vkd3d \
     lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader
 
-    echo "Installing gaming related software"
+    printf '%s\n' "Installing gaming related software"
     paru -S --needed --noconfirm lib32-gamemode-git gamemode-git lib32-mangohud-git mangohud-common-git mangohud-git steam \
             lutris python-magic winetricks protontricks proton-ge-custom-bin \
             heroic-games-launcher-bin libstrangle-git --needed --noconfirm
@@ -434,10 +434,10 @@ if [[ $gaming = "y" ]]; then
     ln -s $HOME/repos/dots/.config/gamemode.ini $HOME/.config/gamemode.init
     ln -s $HOME/repos/dots/.config/Mangohud $HOME/.config/Mangohud
 
-    echo "Setting up gamemode"
+    printf '%s\n' "Setting up gamemode"
     sudo usermod -a `whoami` -G gamemode
-    echo "@gamemode       -       nice    10" | sudo tee -a /etc/security/limits.conf
-    echo '<driconf>
+    printf '%s\n' "@gamemode       -       nice    10" | sudo tee -a /etc/security/limits.conf
+    printf '%s\n' '<driconf>
    <device>
        <application name="Default">
            <option name="vblank_mode" value="0" />
@@ -445,7 +445,7 @@ if [[ $gaming = "y" ]]; then
    </device>
 </driconf>' > /etc/drirc
 
-    echo "Creating the default wine prefix folder"
+    printf '%s\n' "Creating the default wine prefix folder"
     mkdir -p $HOME/.local/share/wineprefixes/default
 fi
 
