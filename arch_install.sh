@@ -417,6 +417,7 @@ git clone https://github.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scrip
 ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
 read -n 1 -s -p "To continue press any key"
 
+touch ~/.hushlogin
 
 printf '%s\n' "Do you wan't to setup gaming related packages, settings and optimizations? [y/n]"
 read gaming
