@@ -330,6 +330,14 @@ usermod -a $username -G audio
 
 read -n 1 -s -p "To continue press any key"
 
+printf '%s\n' "Setting up silent boot and autologin"
+mkdir -p /etc/sysctl.d
+printf '%s\n' "kernel.printk = 3 3 3 3" > /etc/sysctl.d/20-quiet-printk.conf
+mkdir -p /etc/systemd/system/getty@tty1.service.d
+printf '%s\n' "[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty --skip-login --nonewline --noissue --autologin $username --noclear %I \$TERM" > /etc/systemd/system/getty@tty1.service.d/skip-prompt.conf
+
 ai3_path=/home/$username/arch_install3.sh
 sed '1,/^#part3$/d' arch_install2.sh > $ai3_path
 chown $username:$username $ai3_path
