@@ -292,6 +292,11 @@ if [[ $oldroot_fix = "y" ]]; then
     chmod +x /usr/lib/systemd/system-shutdown/nvidia.shutdown
 fi
 
+printf '%s\n' "Setting better journald sizes"
+printf '%s\n' "[Journal]
+SystemMaxUse=250M
+SystemMaxFileSize=50M" > /etc/systemd/journald.conf.d/size.conf
+
 printf '%s\n' "Installing basic packages and enabling basic services"
 pacman -S --noconfirm zsh p7zip unzip xclip base-devel \
     pacman-contrib wireless_tools man pcmanfm fzf git android-file-transfer \
