@@ -293,6 +293,7 @@ if [[ $oldroot_fix = "y" ]]; then
 fi
 
 printf '%s\n' "Setting better journald sizes"
+mkdir -p /etc/systemd/journald.conf.d/
 printf '%s\n' "[Journal]
 SystemMaxUse=250M
 SystemMaxFileSize=50M" > /etc/systemd/journald.conf.d/size.conf
@@ -362,9 +363,6 @@ makepkg -si
 read -n 1 -s -p "To continue press any key"
 cd ~
 rm -rf ~/paru
-
-printf '%s\n' "Reloading systemd-resolved"
-sudo systemctl restart systemd-resolved
 
 printf '%s\n' "Setting up additional must have aur packages"
 paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade dashbinsh
@@ -444,9 +442,6 @@ if [[ $gaming = "y" ]]; then
     paru -S --needed --noconfirm lib32-gamemode-git gamemode-git lib32-mangohud-git mangohud-common-git mangohud-git steam \
             lutris python-magic winetricks protontricks proton-ge-custom-bin \
             heroic-games-launcher-bin libstrangle-git --needed --noconfirm
-
-    ln -s $HOME/repos/dots/.config/gamemode.ini $HOME/.config/gamemode.init
-    ln -s $HOME/repos/dots/.config/Mangohud $HOME/.config/Mangohud
 
     printf '%s\n' "Setting up gamemode"
     sudo usermod -a `whoami` -G gamemode
