@@ -163,7 +163,7 @@ sed -i 's/#name_servers=127.0.0.1/name_servers="94.140.14.14 94.140.15.15 2a10:5
 read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Setting up xorg, gpu drivers and my xorg configs"
-pacman -S --needed --noconfirm xorg-server-common xorg-xsetroot xorg-xinit xorg-xinput xwallpaper xdotool
+pacman -S --needed --noconfirm xorg-server xorg-server-common xorg-xsetroot xorg-xinit xorg-xinput xwallpaper xdotool
 
 printf '%s\n' "Do you have an amd gpu/igpu [y/n]: "
 read amd
