@@ -88,11 +88,11 @@ printf '%s\n' "Installing basic system packages"
 printf '%s\n' "Do you have an intel or amd cpu, or none? [intel/amd/none]: "
 read intelamd
 if [ $intelamd = "intel" ]; then
-    pacstrap /mnt base linux-firmware linux-lts btrfs-progs intel-ucode
+    pacstrap /mnt base linux-firmware linux-lts linux-lts-headers btrfs-progs intel-ucode
 elif [ $intelamd = "amd" ]; then
-    pacstrap /mnt base linux-firmware linux-lts btrfs-progs amd-ucode
+    pacstrap /mnt base linux-firmware linux-lts linux-lts-headers btrfs-progs amd-ucode
 elif [ $intelamd = "none" ]; then
-    pacstrap /mnt base linux-firmware linux-lts btrfs-progs
+    pacstrap /mnt base linux-firmware linux-lts linux-lts-headers btrfs-progs
 fi
 
 printf '%s\n' "Generating fstab"
@@ -184,29 +184,29 @@ read optimus
 printf '%s\n' "Setting xorg configurations"
 
 mkdir -p /etc/X11/xorg.conf.d
-printf '%s\n' "Section "InputClass"
+printf '%s\n' 'Section "InputClass"
 	Identifier "My Mouse"
 	Driver "libinput"
 	MatchIsPointer "yes"
 	Option "AccelProfile" "flat"
 	Option "AccelSpeed" "0"
-EndSection" > /etc/X11/xorg.conf.d/50-mouse-acceleration.conf
+EndSection' > /etc/X11/xorg.conf.d/50-mouse-acceleration.conf
 
-printf '%s\n' "Section "ServerFlags"
+printf '%s\n' 'Section "ServerFlags"
     Option "StandbyTime" "0"
     Option "SuspendTime" "0"
     Option "OffTime" "0"
     Option "BlankTime" "0"
-EndSection" > /etc/X11/xorg.conf.d/10-monitor.conf
+EndSection' > /etc/X11/xorg.conf.d/10-monitor.conf
 
-printf '%s\n' "Section "InputClass"
+printf '%s\n' 'Section "InputClass"
         Identifier "system-keyboard"
         MatchIsKeyboard "on"
         Option "XkbLayout" "hr"
         Option "XkbOptions" "caps:escape"
-EndSection" > /etc/X11/xorg.conf.d/00-keyboard.conf
+EndSection' > /etc/X11/xorg.conf.d/00-keyboard.conf
 
-printf '%s\n' "Section "InputClass"
+printf '%s\n' 'Section "InputClass"
         Identifier "libinput touchpad catchall"
         MatchIsTouchpad "on"
         MatchDevicePath "/dev/input/event*"
@@ -215,7 +215,7 @@ printf '%s\n' "Section "InputClass"
         Option "ClickMethod" "clickfinger"
         Option "NaturalScrolling" "true"
         Option "ScrollMethod" "edge"
-EndSection" > /etc/X11/xorg.conf.d/40-libinput.conf
+EndSection' > /etc/X11/xorg.conf.d/40-libinput.conf
 
 printf '%s\n' "Do you wanna preload amdgpu with mkinitcpio.conf [y/n]: "
 read preload_amdgpu
@@ -299,7 +299,7 @@ SystemMaxUse=250M
 SystemMaxFileSize=50M" > /etc/systemd/journald.conf.d/size.conf
 
 printf '%s\n' "Installing basic packages and enabling basic services"
-pacman -S --noconfirm zsh p7zip unzip xclip base-devel \
+pacman -S --noconfirm --needed zsh p7zip unzip xclip base-devel \
     pacman-contrib wireless_tools man pcmanfm fzf git android-file-transfer \
     pipewire pipewire-pulse pipewire-alsa rtkit openssh android-udev \
     alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
@@ -452,7 +452,7 @@ if [[ $gaming = "y" ]]; then
            <option name="vblank_mode" value="0" />
        </application>
    </device>
-</driconf>' > /etc/drirc
+</driconf>' | sudo tee -a /etc/drirc
 
     printf '%s\n' "Creating the default wine prefix folder"
     mkdir -p $HOME/.local/share/wineprefixes/default
