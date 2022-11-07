@@ -364,6 +364,13 @@ makepkg -si
 read -n 1 -s -p "To continue press any key"
 cd ~
 rm -rf ~/paru
+sudo sed -i '/s/#BottomUp/BottomUp/' /etc/paru.conf
+sudo sed -i '/s/#RemoveMake/RemoveMake/' /etc/paru.conf
+sudo sed -i '/s/#SudoLoop/SudoLoop/' /etc/paru.conf
+sudo sed -i '/s/#CombinedUpgrade/CombinedUpgrade/' /etc/paru.conf
+sudo sed -i '/s/#CleanAfter/CleanAfter/' /etc/paru.conf
+sudo sed -i '/s/#UpgradeMenu/UpgradeMenu/' /etc/paru.conf
+sudo sed -i '/s/#NewsOnUpgrade/NewsOnUpgrade/' /etc/paru.conf
 
 printf '%s\n' "Setting up additional must have aur packages"
 paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade dashbinsh
