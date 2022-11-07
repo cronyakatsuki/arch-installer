@@ -315,7 +315,8 @@ systemctl enable acpid.service
 read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Setting up makepkg.conf"
-sed -i 's/-march=native/-march=x86-64 -mtune=generic/' /etc/makepkg.conf
+sed -i 's/-march=x86-64 -mtune=generic/-march=native/' /etc/makepkg.conf
+sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(nproc)"/' /etc/makepkg.conf
 sed -i 's/!ccache/ccache/g' /etc/makepkg.conf
 
 printf '%s\n' "Set root password"
