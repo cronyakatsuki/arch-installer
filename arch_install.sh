@@ -144,7 +144,6 @@ printf '%s\n' $hostname > /etc/hostname
 printf '%s\n' "127.0.0.1       localhost" >> /etc/hosts
 printf '%s\n' "::1             localhost" >> /etc/hosts
 printf '%s\n' "127.0.1.1       $hostname.localdomain $hostname" >> /etc/hosts
-mkinitcpio -P
 
 read -n 1 -s -p "To continue press any key"
 
@@ -154,11 +153,14 @@ cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 reflector --latest 200 --sort rate --save /etc/pacman.d/mirrorlist
 
 printf '%s\n' "Setting up network managment"
-pacman -S --noconfirm networkmanager dhcpcd openresolv
+pacman -S --noconfirm networkmanager dhcpcd openresolv dnscrypt-proxy
 systemctl enable NetworkManager
 systemctl enable dhcpcd
+systemctl enable dnscrypt-proxy
 printf '%s\n' "Setting better dns servers as defaults"
-sed -i 's/#name_servers=127.0.0.1/name_servers="94.140.14.14 94.140.15.15 2a10:50c0::ad1:ff 2a10:50c0::ad2:ff"/' /etc/resolvconf.conf
+sed -i 's/#name_servers=127.0.0.1/name_servers="::1 127.0.0.1"/' /etc/resolvconf.conf
+sed -i -e "0,/^listen_addresses = \['127.0.0.1:53'\]/ s/^listen_addresses = \['127.0.0.1:53'\]/listen_addresses = \['127.0.0.1:53', '\[::1\]:53'\]/g" /etc/dnscrypt-proxy/dnscrypt-proxy.toml
+sed -i "s/# server_names = \['scaleway-fr', 'google', 'yandex', 'cloudflare'\]/server_names = \['nextdns', 'nextdns-ipv6'\]/g" /etc/dnscrypt-proxy/dnscrypt-proxy.toml
 
 read -n 1 -s -p "To continue press any key"
 
@@ -324,7 +326,8 @@ passwd
 
 printf '%s\n' "Setting up user"
 
-printf '%s\n' "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+sed -i 's/# %wheel ALL=(ALL:ALL) NOPASSWD: ALL/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/g' /etc/sudoers
+
 printf '%s\n' "Enter Username: "
 read username
 useradd -m $username
@@ -351,6 +354,9 @@ chown $username:$username $ai3_path
 chmod +x $ai3_path
 su -c $ai3_path -s /bin/sh $username
 rm -rf $ai3_path
+printf '%s\n' "$username ALL=(ALL) NOPASSWD: /home/$username/.local/bin/ryzenset, /usr/bin/ryzenadj, /home/$username/bin/misc//get-tctl-limit" >> /etc/sudoers
+sed -i 's/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/# %wheel ALL=(ALL:ALL) NOPASSWD: ALL/g' /etc/sudoers
+sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /etc/sudoers
 printf '%s\n' "Pre-Installation Finish Reboot now"
 exit
 
