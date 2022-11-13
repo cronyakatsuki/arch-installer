@@ -386,7 +386,7 @@ read -n 1 -s -p "To continue press any key"
 printf '%s\n' "Getting my arch dotfiles"
 mkdir -p ~/repos/dots
 cd ~/repos/dots
-git clone https://github.com/cronyakatsuki/arch-dots.git arch
+git clone https://gitlab.com/cronyakatsuki/arch-dots.git arch
 read -n 1 -s -p "To continue press any key"
 mkdir ~/.config
 cd ~/repos/dots/arch
@@ -395,7 +395,7 @@ make
 printf '%s\n' "Getting my general dotfiles"
 mkdir -p ~/repos/dots
 cd ~/repos/dots
-git clone https://github.com/cronyakatsuki/general-dots.git general
+git clone https://gitlab.com/cronyakatsuki/general-dots.git general
 read -n 1 -s -p "To continue press any key"
 cd ~/repos/dots/general
 make
@@ -403,7 +403,7 @@ make
 printf '%s\n' "Getting my scripts"
 mkdir -p ~/bin
 cd ~/repos/dots
-git clone https://github.com/cronyakatsuki/scripts.git ~/repos/dots/scripts
+git clone https://gitlab.com/cronyakatsuki/scripts.git ~/repos/dots/scripts
 read -n 1 -s -p "To continue press any key"
 ln -s $HOME/repos/dots/scripts $HOME/bin/misc
 
@@ -412,25 +412,25 @@ sudo pacman -S --noconfirm --needed neovim ripgrep
 git clone --depth 1 https://github.com/wbthomason/packer.nvim\
  ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 
-git clone https://github.com/cronyakatsuki/nvim-conf ~/.config/nvim
+git clone https://gitlab.com/cronyakatsuki/nvim-conf ~/.config/nvim
 read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Setting up slock"
-git clone https://github.com/cronyakatsuki/slock.git ~/repos/slock
+git clone https://gitlab.com/cronyakatsuki/slock.git ~/repos/slock
 cd ~/repos/slock
 sudo make install clean
 read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Setting up dmenu and dmenu scripts"
-git clone https://github.com/cronyakatsuki/dmenu.git ~/repos/dmenu
+git clone https://gitlab.com/cronyakatsuki/dmenu.git ~/repos/dmenu
 cd ~/repos/dmenu
 sudo make install clean
-git clone https://github.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scripts
+git clone https://gitlab.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scripts
 ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
 read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Setting up startpage"
-git clone https://github.com/cronyakatsuki/startpage.git ~/repos/startpage
+git clone https://gitlab.com/cronyakatsuki/startpage.git ~/repos/startpage
 
 touch ~/.hushlogin
 
