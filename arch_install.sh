@@ -8,16 +8,6 @@ printf '%s\n' "Enabling parallel downloads and updating keyring"
 sed -i "s/^#ParallelDownloads = 5/ParallelDownloads = 10/" /etc/pacman.conf
 pacman --noconfirm -Sy archlinux-keyring
 
-printf '%s\n' "Loading croatian keys"
-loadkeys croat
-
-printf '%s\n' "Connect to wifi if needed"
-printf '%s\n' """Steps to connect
-[iwd]# device list
-[iwd]# station device scan
-[iwd]# station device get-networks
-[iwd]# station device connect SSID
-"""
 iwctl
 printf '%s\n' "Setting ntp"
 timedatectl set-ntp true
@@ -82,8 +72,6 @@ if [[ ! -z ${swappartition+x} ]]; then
     swapon $swappartition
 fi
 
-read -n 1 -s -p "To continue press any key"
-
 printf '%s\n' "Installing basic system packages"
 printf '%s\n' "Do you have an intel or amd cpu, or none? [intel/amd/none]: "
 read intelamd
@@ -145,8 +133,6 @@ printf '%s\n' "127.0.0.1       localhost" >> /etc/hosts
 printf '%s\n' "::1             localhost" >> /etc/hosts
 printf '%s\n' "127.0.1.1       $hostname.localdomain $hostname" >> /etc/hosts
 
-read -n 1 -s -p "To continue press any key"
-
 printf '%s\n' "Downloading and setting better mirrorlist"
 pacman -S --noconfirm --needed reflector rsync
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
@@ -161,8 +147,6 @@ printf '%s\n' "Setting better dns servers as defaults"
 sed -i 's/#name_servers=127.0.0.1/name_servers="::1 127.0.0.1"/' /etc/resolvconf.conf
 sed -i -e "0,/^listen_addresses = \['127.0.0.1:53'\]/ s/^listen_addresses = \['127.0.0.1:53'\]/listen_addresses = \['127.0.0.1:53', '\[::1\]:53'\]/g" /etc/dnscrypt-proxy/dnscrypt-proxy.toml
 sed -i "s/# server_names = \['scaleway-fr', 'google', 'yandex', 'cloudflare'\]/server_names = \['nextdns', 'nextdns-ipv6'\]/g" /etc/dnscrypt-proxy/dnscrypt-proxy.toml
-
-read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Setting up xorg, gpu drivers and my xorg configs"
 pacman -S --needed --noconfirm xorg-server xorg-server-common xorg-xsetroot xorg-xinit xorg-xinput xwallpaper xdotool
@@ -227,8 +211,6 @@ printf '%s\n' "Setting up grub"
 pacman --noconfirm -S grub efibootmgr os-prober
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 
-read -n 1 -s -p "To continue press any key"
-
 if [[ $nvidia = "y" ]]; then
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 nmi_watchdog=0 zswap.enabled=0 nvidia-drm.modeset=1 rcutree.rcu_idle_gp_delay=1"/' /etc/default/grub
 else
@@ -236,8 +218,6 @@ else
 fi
 
 grub-mkconfig -o /boot/grub/grub.cfg
-
-read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Do you wanna disable sp5100_tco driver for amd to disable it's watchdog (Can help with shutdown errors) [y/n]: "
 read sp5100_tco
@@ -304,8 +284,8 @@ printf '%s\n' "Installing basic packages and enabling basic services"
 pacman -S --noconfirm --needed zsh p7zip unzip xclip base-devel \
     pacman-contrib wireless_tools man pcmanfm fzf git android-file-transfer \
     pipewire pipewire-pulse pipewire-alsa rtkit openssh android-udev \
-    alsa-plugins alsa-tools alsa-utils pulsemixer pamixer \
-    firefox playerctl lxsession bluez bluez-utils syncthing \
+    alsa-plugins alsa-tools alsa-utils pulsemixer pamixer python-pygame \
+    firefox playerctl lxsession bluez bluez-utils syncthing python-numpy \
     keepassxc thunderbird shotgun xdotool bat acpid imagemagick\
     ufw hugo python-pygments python-gitpython udisks2 hacksaw \
     ccache smartmontools libreoffice-still aria2 ghostscript
@@ -313,8 +293,6 @@ pacman -S --noconfirm --needed zsh p7zip unzip xclip base-devel \
 systemctl enable rtkit-daemon.service
 systemctl enable bluetooth.service
 systemctl enable acpid.service
-
-read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Setting up makepkg.conf"
 sed -i 's/-march=x86-64 -mtune=generic/-march=native/' /etc/makepkg.conf
@@ -367,7 +345,7 @@ sudo pacman -S --noconfirm --needed go rust nodejs npm cmake git zig
 git clone https://aur.archlinux.org/paru.git ~/paru
 cd ~/paru
 makepkg -si
-read -n 1 -s -p "To continue press any key"
+
 cd ~
 rm -rf ~/paru
 sudo sed -i '/s/#BottomUp/BottomUp/' /etc/paru.conf
@@ -380,8 +358,6 @@ sudo sed -i '/s/#NewsOnUpgrade/NewsOnUpgrade/' /etc/paru.conf
 
 printf '%s\n' "Setting up additional must have aur packages"
 paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade dashbinsh
-
-read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Getting my arch dotfiles"
 mkdir -p ~/repos/dots
@@ -396,7 +372,6 @@ printf '%s\n' "Getting my general dotfiles"
 mkdir -p ~/repos/dots
 cd ~/repos/dots
 git clone https://gitlab.com/cronyakatsuki/general-dots.git general
-read -n 1 -s -p "To continue press any key"
 cd ~/repos/dots/general
 make
 
@@ -404,7 +379,6 @@ printf '%s\n' "Getting my scripts"
 mkdir -p ~/bin
 cd ~/repos/dots
 git clone https://gitlab.com/cronyakatsuki/scripts.git ~/repos/dots/scripts
-read -n 1 -s -p "To continue press any key"
 ln -s $HOME/repos/dots/scripts $HOME/bin/misc
 
 printf '%s\n' "Setting up neovim"
@@ -413,13 +387,11 @@ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
  ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 
 git clone https://gitlab.com/cronyakatsuki/nvim-conf ~/.config/nvim
-read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Setting up slock"
 git clone https://gitlab.com/cronyakatsuki/slock.git ~/repos/slock
 cd ~/repos/slock
 sudo make install clean
-read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Setting up dmenu and dmenu scripts"
 git clone https://gitlab.com/cronyakatsuki/dmenu.git ~/repos/dmenu
@@ -427,7 +399,6 @@ cd ~/repos/dmenu
 sudo make install clean
 git clone https://gitlab.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scripts
 ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
-read -n 1 -s -p "To continue press any key"
 
 printf '%s\n' "Setting up startpage"
 git clone https://gitlab.com/cronyakatsuki/startpage.git ~/repos/startpage
@@ -458,7 +429,7 @@ if [[ $gaming = "y" ]]; then
     printf '%s\n' "Installing gaming related software"
     paru -S --needed --noconfirm lib32-gamemode-git gamemode-git lib32-mangohud-git mangohud-common-git mangohud-git steam \
             lutris python-magic winetricks protontricks proton-ge-custom-bin \
-            heroic-games-launcher-bin libstrangle-git --needed --noconfirm
+            heroic-games-launcher-bin libstrangle-git itch-setup-bin --needed --noconfirm
 
     printf '%s\n' "Setting up gamemode"
     sudo usermod -a `whoami` -G gamemode
