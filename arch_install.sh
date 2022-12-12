@@ -287,7 +287,7 @@ pacman -S --noconfirm --needed zsh exa p7zip unzip xclip base-devel \
     alsa-plugins alsa-tools alsa-utils pulsemixer pamixer python-pygame \
     firefox playerctl lxsession bluez bluez-utils syncthing python-numpy \
     keepassxc thunderbird shotgun xdotool bat acpid imagemagick \
-    ufw hugo python-pygments python-gitpython udisks2 hacksaw parallel \
+    ufw zola python-pygments python-gitpython udisks2 hacksaw parallel \
     ccache smartmontools libreoffice-still aria2 ghostscript fd
 
 systemctl enable rtkit-daemon.service
