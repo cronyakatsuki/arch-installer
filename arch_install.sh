@@ -281,14 +281,14 @@ SystemMaxUse=250M
 SystemMaxFileSize=50M" > /etc/systemd/journald.conf.d/size.conf
 
 printf '%s\n' "Installing basic packages and enabling basic services"
-pacman -S --noconfirm --needed zsh p7zip unzip xclip base-devel \
+pacman -S --noconfirm --needed zsh exa p7zip unzip xclip base-devel \
     pacman-contrib wireless_tools man pcmanfm fzf git android-file-transfer \
     pipewire pipewire-pulse pipewire-alsa rtkit openssh android-udev \
     alsa-plugins alsa-tools alsa-utils pulsemixer pamixer python-pygame \
     firefox playerctl lxsession bluez bluez-utils syncthing python-numpy \
-    keepassxc thunderbird shotgun xdotool bat acpid imagemagick\
-    ufw hugo python-pygments python-gitpython udisks2 hacksaw \
-    ccache smartmontools libreoffice-still aria2 ghostscript
+    keepassxc thunderbird shotgun xdotool bat acpid imagemagick \
+    ufw hugo python-pygments python-gitpython udisks2 hacksaw parallel \
+    ccache smartmontools libreoffice-still aria2 ghostscript fd
 
 systemctl enable rtkit-daemon.service
 systemctl enable bluetooth.service
@@ -400,9 +400,6 @@ sudo make install clean
 git clone https://gitlab.com/cronyakatsuki/dmenu-scripts.git ~/repos/dmenu-scripts
 ln -s $HOME/repos/dmenu-scripts $HOME/bin/dmenu
 
-printf '%s\n' "Setting up startpage"
-git clone https://gitlab.com/cronyakatsuki/startpage.git ~/repos/startpage
-
 touch ~/.hushlogin
 
 printf '%s\n' "Do you wan't to setup gaming related packages, settings and optimizations? [y/n]"
@@ -429,7 +426,7 @@ if [[ $gaming = "y" ]]; then
     printf '%s\n' "Installing gaming related software"
     paru -S --needed --noconfirm lib32-gamemode-git gamemode-git lib32-mangohud-git mangohud-common-git mangohud-git steam \
             lutris python-magic winetricks protontricks proton-ge-custom-bin \
-            heroic-games-launcher-bin libstrangle-git itch-setup-bin --needed --noconfirm
+            heroic-games-launcher-bin itch-setup-bin --needed --noconfirm
 
     printf '%s\n' "Setting up gamemode"
     sudo usermod -a `whoami` -G gamemode
