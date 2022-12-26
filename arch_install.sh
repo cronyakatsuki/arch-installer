@@ -282,16 +282,15 @@ SystemMaxFileSize=50M" > /etc/systemd/journald.conf.d/size.conf
 
 printf '%s\n' "Installing basic packages and enabling basic services"
 pacman -S --noconfirm --needed zsh exa p7zip unzip xclip base-devel \
-    pacman-contrib wireless_tools man pcmanfm fzf git android-file-transfer \
-    pipewire pipewire-pulse pipewire-alsa rtkit openssh android-udev \
-    alsa-plugins alsa-tools alsa-utils pulsemixer pamixer python-pygame \
-    firefox playerctl lxsession bluez bluez-utils syncthing python-numpy \
-    keepassxc thunderbird shotgun xdotool bat acpid imagemagick \
-    ufw zola python-pygments python-gitpython udisks2 hacksaw parallel \
+    pacman-contrib wireless_tools man fzf git task trash-cli \
+    pipewire pipewire-pulse pipewire-alsa rtkit openssh \
+    alsa-plugins alsa-utils perl-file-mimeinfo perl-image-exif-tool \
+    firefox syncthing android-file-transfer android-udev android-tools \
+    keepassxc thunderbird bat acpid imagemagick \
+    ufw zola python-pygments python-gitpython udisks2 parallel \
     ccache smartmontools libreoffice-still aria2 ghostscript fd
 
 systemctl enable rtkit-daemon.service
-systemctl enable bluetooth.service
 systemctl enable acpid.service
 
 printf '%s\n' "Setting up makepkg.conf"
@@ -332,7 +331,7 @@ chown $username:$username $ai3_path
 chmod +x $ai3_path
 su -c $ai3_path -s /bin/sh $username
 rm -rf $ai3_path
-printf '%s\n' "$username ALL=(ALL) NOPASSWD: /home/$username/.local/bin/ryzenset, /usr/bin/ryzenadj, /home/$username/bin/misc//get-tctl-limit" >> /etc/sudoers
+printf '%s\n' "$username ALL=(ALL) NOPASSWD: /home/$username/.local/bin/ryzenset, /usr/bin/ryzenadj, /home/$username/bin/misc/get-tctl-limit" >> /etc/sudoers
 sed -i 's/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/# %wheel ALL=(ALL:ALL) NOPASSWD: ALL/g' /etc/sudoers
 sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /etc/sudoers
 printf '%s\n' "Pre-Installation Finish Reboot now"
@@ -357,7 +356,7 @@ sudo sed -i '/s/#UpgradeMenu/UpgradeMenu/' /etc/paru.conf
 sudo sed -i '/s/#NewsOnUpgrade/NewsOnUpgrade/' /etc/paru.conf
 
 printf '%s\n' "Setting up additional must have aur packages"
-paru -S --needed --noconfirm brillo dmenu-bluetooth clipmenu-git xdg-ninja-git tutanota-desktop-bin ferdium-bin colorpicker yt-dlp downgrade dashbinsh
+paru -S --needed --noconfirm xdg-ninja-git tutanota-desktop-bin ferdium-bin yt-dlp downgrade dashbinsh buku
 
 printf '%s\n' "Getting my arch dotfiles"
 mkdir -p ~/repos/dots
@@ -407,7 +406,7 @@ read gaming
 if [[ $gaming = "y" ]]; then
     if pacman -Qi nvidia-dkms > /dev/null; then
         printf '%s\n' "Installing nvidia drivers"
-        sudo pacman -S --noconfirm --needed nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings vulkan-icd-loader lib32-vulkan-icd-loader
+        sudo pacman -S --noconfirm --needed nvidia-open-dkms nvidia-utils lib32-nvidia-utils nvidia-settings vulkan-icd-loader lib32-vulkan-icd-loader
     fi
 
     if pacman -Qi xf86-video-amdgpu > /dev/null; then
@@ -421,7 +420,7 @@ if [[ $gaming = "y" ]]; then
     lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo \
     sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama \
     ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 vkd3d lib32-vkd3d \
-    lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader
+    lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader rclone
 
     printf '%s\n' "Installing gaming related software"
     paru -S --needed --noconfirm lib32-gamemode-git gamemode-git lib32-mangohud-git mangohud-common-git mangohud-git steam \
