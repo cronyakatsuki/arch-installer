@@ -139,14 +139,11 @@ cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 reflector --latest 200 --sort rate --save /etc/pacman.d/mirrorlist
 
 printf '%s\n' "Setting up network managment"
-pacman -S --noconfirm networkmanager dhcpcd openresolv dnscrypt-proxy
+pacman -S --noconfirm networkmanager dhcpcd openresolv
 systemctl enable NetworkManager
 systemctl enable dhcpcd
-systemctl enable dnscrypt-proxy
 printf '%s\n' "Setting better dns servers as defaults"
-sed -i 's/#name_servers=127.0.0.1/name_servers="::1 127.0.0.1"/' /etc/resolvconf.conf
-sed -i -e "0,/^listen_addresses = \['127.0.0.1:53'\]/ s/^listen_addresses = \['127.0.0.1:53'\]/listen_addresses = \['127.0.0.1:53', '\[::1\]:53'\]/g" /etc/dnscrypt-proxy/dnscrypt-proxy.toml
-sed -i "s/# server_names = \['scaleway-fr', 'google', 'yandex', 'cloudflare'\]/server_names = \['nextdns', 'nextdns-ipv6'\]/g" /etc/dnscrypt-proxy/dnscrypt-proxy.toml
+sed -i 's/#name_servers=127.0.0.1/name_servers="94.140.14.14 94.140.15.15"/' /etc/resolvconf.conf
 
 printf '%s\n' "Setting up xorg, gpu drivers and my xorg configs"
 pacman -S --needed --noconfirm xorg-server xorg-server-common xorg-xsetroot xorg-xinit xorg-xinput xwallpaper xdotool
