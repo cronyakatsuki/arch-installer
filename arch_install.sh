@@ -280,10 +280,10 @@ SystemMaxFileSize=50M" > /etc/systemd/journald.conf.d/size.conf
 printf '%s\n' "Installing basic packages and enabling basic services"
 pacman -S --noconfirm --needed zsh exa p7zip unzip xclip base-devel \
     pacman-contrib wireless_tools man fzf git task trash-cli \
-    pipewire pipewire-pulse pipewire-alsa rtkit openssh \
+    pipewire pipewire-pulse pipewire-alsa wireplumber rtkit openssh cronie \
     alsa-plugins alsa-utils perl-file-mimeinfo perl-image-exif-tool \
-    firefox syncthing android-file-transfer android-udev android-tools \
-    keepassxc thunderbird bat acpid imagemagick \
+    syncthing android-file-transfer android-udev android-tools \
+    keepassxc thunderbird bat acpid imagemagick speedtest-cli \
     ufw zola python-pygments python-gitpython udisks2 parallel \
     ccache smartmontools libreoffice-still aria2 ghostscript fd
 
@@ -353,7 +353,7 @@ sudo sed -i '/s/#UpgradeMenu/UpgradeMenu/' /etc/paru.conf
 sudo sed -i '/s/#NewsOnUpgrade/NewsOnUpgrade/' /etc/paru.conf
 
 printf '%s\n' "Setting up additional must have aur packages"
-paru -S --needed --noconfirm xdg-ninja-git tutanota-desktop-bin ferdium-bin yt-dlp downgrade dashbinsh buku
+paru -S --needed --noconfirm librewolf-bin xdg-ninja-git tutanota-desktop-bin ferdium-bin yt-dlp downgrade dashbinsh buku
 
 printf '%s\n' "Getting my arch dotfiles"
 mkdir -p ~/repos/dots
